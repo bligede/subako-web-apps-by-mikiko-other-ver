@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Daftar Pintu Air</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="gates" data-title="Pintu Air">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Daftar pintu · status sesuai laporan perangkat</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Pintu Air</h1>
+          <p class="lede">Subak Sari · 6 pintu · status dan mode berasal dari laporan perangkat,
+            bukan dari perintah yang dikirim.</p>
+        </div>
+        <span class="spacer"></span>
+        <div class="row" data-roles="ADMIN">
+          <button class="btn btn--sm">Tambah pintu</button>
+          <button class="btn btn--sm btn--primary">Assign perangkat</button>
+        </div>
+      </div>
+
+      <div class="grid g-4">
+        <section class="card kpi"><span class="kpi__label">Total pintu</span><span class="kpi__value">6</span><span class="kpi__meta">4 terpasang perangkat</span></section>
+        <section class="card kpi"><span class="kpi__label">AUTO</span><span class="kpi__value">3</span><span class="kpi__meta">menjalankan rule aktif</span></section>
+        <section class="card kpi kpi--critical"><span class="kpi__label">FAULT</span><span class="kpi__value">1</span><span class="kpi__meta">GATE-02 · overcurrent</span></section>
+        <section class="card kpi kpi--warning"><span class="kpi__label">HOLD / MANUAL</span><span class="kpi__value">2</span><span class="kpi__meta">1 HOLD · 1 MANUAL</span></section>
+      </div>
+
+      <div class="filter-bar mt-4">
+        <span class="chip is-active">Semua mode</span>
+        <span class="chip">AUTO</span><span class="chip">MANUAL</span><span class="chip">HOLD</span>
+        <span class="chip">FAULT</span><span class="chip">IDLE</span>
+        <span class="spacer" style="flex:1"></span>
+        <span class="badge badge--demo">DEMO</span>
+      </div>
+
+      <section class="card">
+        <div class="card__head"><h2>Daftar pintu</h2><span class="spacer"></span>
+          <span class="small muted">diurutkan: FAULT → HOLD → MANUAL → AUTO → IDLE</span></div>
+        <div class="card__body card__body--flush">
+          <div class="table-wrap">
+            <table class="table table--cards table--flush">
+              <thead>
+                <tr>
+                  <th>Pintu</th><th>Mode</th><th class="right">Bukaan</th><th class="right">Level hulu</th>
+                  <th class="right">Baterai</th><th>Komunikasi</th><th>Freshness</th><th class="right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-02</strong><br><span class="small muted">Tempek Kedua · Bangunan Bagi 2</span></td>
+                  <td data-label="Mode"><span class="badge badge--critical">FAULT</span></td>
+                  <td data-label="Bukaan" class="right num">0,0%</td>
+                  <td data-label="Level hulu" class="right num">0,74 m</td>
+                  <td data-label="Baterai" class="right num">64%</td>
+                  <td data-label="Komunikasi">6 mnt lalu</td>
+                  <td data-label="Freshness"><span class="badge badge--stale">STALE</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-03</strong><br><span class="small muted">Tempek Subak Sari · Bangunan Bagi 3</span></td>
+                  <td data-label="Mode"><span class="badge badge--warning">HOLD</span></td>
+                  <td data-label="Bukaan" class="right num">22,5%</td>
+                  <td data-label="Level hulu" class="right num">0,79 m</td>
+                  <td data-label="Baterai" class="right num">81%</td>
+                  <td data-label="Komunikasi">52 s lalu</td>
+                  <td data-label="Freshness"><span class="badge badge--live">LIVE</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-05</strong><br><span class="small muted">Tempek Ketiga · Bangunan Bagi 4</span></td>
+                  <td data-label="Mode"><span class="badge badge--info">MANUAL</span></td>
+                  <td data-label="Bukaan" class="right num">48,0%</td>
+                  <td data-label="Level hulu" class="right num">0,66 m</td>
+                  <td data-label="Baterai" class="right num">73%</td>
+                  <td data-label="Komunikasi">40 s lalu</td>
+                  <td data-label="Freshness"><span class="badge badge--live">LIVE</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-01</strong><br><span class="small muted">Bangunan Bagi Utama</span></td>
+                  <td data-label="Mode"><span class="badge badge--ok">AUTO</span></td>
+                  <td data-label="Bukaan" class="right num">34,0%</td>
+                  <td data-label="Level hulu" class="right num">0,82 m</td>
+                  <td data-label="Baterai" class="right num">87%</td>
+                  <td data-label="Komunikasi">44 s lalu</td>
+                  <td data-label="Freshness"><span class="badge badge--live">LIVE</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-04</strong><br><span class="small muted">Tempek Keempat · Bangunan Bagi 4</span></td>
+                  <td data-label="Mode"><span class="badge badge--offline">IDLE</span></td>
+                  <td data-label="Bukaan" class="right num">0,0%</td>
+                  <td data-label="Level hulu" class="right num">—</td>
+                  <td data-label="Baterai" class="right num">42%</td>
+                  <td data-label="Komunikasi">4 mnt lalu</td>
+                  <td data-label="Freshness"><span class="badge badge--stale">STALE</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+                <tr>
+                  <td data-label="Pintu"><strong>GATE-06</strong><br><span class="small muted">Belum terpasang perangkat</span></td>
+                  <td data-label="Mode"><span class="badge badge--offline">—</span></td>
+                  <td data-label="Bukaan" class="right num">—</td>
+                  <td data-label="Level hulu" class="right num">—</td>
+                  <td data-label="Baterai" class="right num">—</td>
+                  <td data-label="Komunikasi">—</td>
+                  <td data-label="Freshness"><span class="badge badge--offline">NO DATA</span></td>
+                  <td data-label="Aksi" class="right"><a class="btn btn--sm" href="05-gate-detail.html">Detail</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card__foot">Pintu tanpa perangkat tetap muncul agar tidak “hilang” dari daftar;
+          statusnya “—” bukan “tertutup”.</div>
+      </section>
+
+      <div class="note mt-6">
+        <b>Catatan desain.</b> Urutan baris mengikuti prioritas keselamatan
+        <code>FAULT &gt; MANUAL &gt; HOLD &gt; AUTO &gt; IDLE</code> agar gangguan terlihat lebih dulu,
+        bukan diurutkan alfabetis.
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

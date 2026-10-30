@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Detail Pintu GATE-01</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="gates" data-title="Pintu Air / GATE-01">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Detail pintu · panel aksi berubah sesuai role</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <div class="row small muted" style="gap:6px">
+            <a href="04-gates.html">Pintu Air</a><span>/</span><span>GATE-01</span>
+          </div>
+          <h1>GATE-01 · Bangunan Bagi Utama</h1>
+          <div class="row row--wrap mt-4">
+            <span class="badge badge--ok">AUTO</span>
+            <span class="badge badge--live"><i class="dot-live"></i>LIVE · 44 s lalu</span>
+            <span class="badge badge--demo">DEMO</span>
+            <span class="small muted">subako-gate-01 · firmware 0.9.3</span>
+          </div>
+        </div>
+        <span class="spacer"></span>
+        <button class="btn btn--sm">Riwayat lengkap</button>
+      </div>
+
+      <div class="grid g-side-3">
+        <div class="stack">
+          <section class="card">
+            <div class="card__head"><h2>Status terlapor</h2><span class="spacer"></span>
+              <span class="small muted">update 14:32:04 WITA</span></div>
+            <div class="card__body">
+              <div class="grid g-3" style="gap:14px">
+                <div>
+                  <span class="kpi__label">Bukaan pintu</span>
+                  <div class="sensor-value">34,0<small>%</small></div>
+                  <div class="progress mt-4" role="progressbar" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100"><span style="width:34%"></span></div>
+                  <span class="hint">target rule: 40,0% · selisih −6,0%</span>
+                </div>
+                <div>
+                  <span class="kpi__label">Ketinggian hulu</span>
+                  <div class="sensor-value">0,82<small>m</small></div>
+                  <span class="hint">quality <span class="badge badge--ok">OK</span> · seq 3812</span>
+                </div>
+                <div>
+                  <span class="kpi__label">Debit terukur</span>
+                  <div class="sensor-value">37,6<small>L/d</small></div>
+                  <span class="hint">target 39,0 · deviasi −3,6%</span>
+                </div>
+              </div>
+
+              <hr class="divider">
+
+              <div class="grid g-3" style="gap:14px">
+                <dl class="kv">
+                  <dt>Posisi encoder</dt><dd>1.284 step</dd>
+                  <dt>Arus motor</dt><dd>1,24 A</dd>
+                  <dt>Kondisi motor</dt><dd><span class="badge badge--ok">NORMAL</span></dd>
+                </dl>
+                <dl class="kv">
+                  <dt>Limit switch buka</dt><dd>Tidak aktif</dd>
+                  <dt>Limit switch tutup</dt><dd>Tidak aktif</dd>
+                  <dt>E-STOP</dt><dd><span class="badge badge--ok">Tidak aktif</span></dd>
+                </dl>
+                <dl class="kv">
+                  <dt>Baterai</dt><dd>87% · 3,98 V</dd>
+                  <dt>RSSI / SNR</dt><dd>−71 dBm · 8,5 dB</dd>
+                  <dt>LoRaWAN FCnt</dt><dd class="mono">3812</dd>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card__head"><h2>Telemetri 24 jam</h2><span class="spacer"></span>
+              <div class="segmented"><button class="is-active">Grafik</button><button>Tabel</button></div></div>
+            <div class="card__body">
+              <div class="legend mb-2">
+                <span><i style="background:#0f7a6b"></i>Ketinggian hulu (m)</span>
+                <span><i style="background:#e8a23b"></i>Bukaan pintu (%)</span>
+              </div>
+              <div data-chart='{"height":210,"labels":["00","03","06","09","12","15","18","21"],"series":[{"name":"Hulu","color":"#0f7a6b","values":[0.71,0.68,0.66,0.7,0.78,0.82,0.79,0.74],"fill":true},{"name":"Bukaan","color":"#e8a23b","values":[18,18,22,30,34,34,30,26],"dashed":true}]}'></div>
+            </div>
+            <div class="card__foot">Nilai diambil dari pembacaan 1 menit; gap data ditampilkan sebagai garis terputus.</div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <!-- FORM: hanya OPERATOR & PEKASEH -->
+          <section class="card" data-roles="OPERATOR PEKASEH">
+            <div class="card__head"><h2>Kirim perintah</h2><span class="spacer"></span>
+              <span class="badge badge--info">rule v3</span></div>
+            <div class="card__body">
+              <form class="stack" data-command-demo>
+                <div class="field">
+                  <label class="label" for="action">Aksi</label>
+                  <select class="select" id="action">
+                    <option>SET_POSITION — atur target bukaan</option>
+                    <option>OPEN — buka penuh</option>
+                    <option>CLOSE — tutup penuh</option>
+                    <option>HOLD — tahan operasi otomatis</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="label" for="target">Target bukaan</label>
+                  <div class="input-group">
+                    <input class="input" id="target" value="40" inputmode="decimal">
+                    <span class="btn" style="pointer-events:none">%</span>
+                  </div>
+                  <span class="hint">Rentang 0–100 · perubahan minimum 1% · toleransi ±3%</span>
+                </div>
+                <div class="field">
+                  <label class="label" for="reason">Alasan (wajib, tercatat di ledger)</label>
+                  <textarea class="textarea" id="reason">Menyesuaikan giliran Tempek Subak Sari sesuai jadwal 12:00–15:00 WITA.</textarea>
+                </div>
+                <label class="check">
+                  <input type="checkbox">
+                  <span class="small">Saya memahami perintah ini menggerakkan pintu fisik dan akan
+                    tercatat sebagai aktivitas operator.</span>
+                </label>
+                <button class="btn btn--primary btn--block" type="submit">Kirim perintah</button>
+                <span class="hint">Validasi server: rule aktif · freshness · mode · capability ·
+                  duplikasi · keselamatan state. Perintah kedaluwarsa dalam 90 detik.</span>
+              </form>
+              <div data-command-result hidden></div>
+            </div>
+          </section>
+
+          <!-- VIEWER -->
+          <section class="card" data-roles="VIEWER">
+            <div class="card__head"><h2>Operasi pintu</h2></div>
+            <div class="card__body">
+              <div class="banner banner--info">
+                <span>ℹ️</span>
+                <div class="small">Anda dapat memantau status pintu ini. Perubahan bukaan
+                  dilakukan oleh operator atau Pekaseh sesuai jadwal.</div>
+              </div>
+              <a class="btn btn--sm mt-4" href="06-rules.html">Lihat jadwal distribusi</a>
+            </div>
+          </section>
+
+          <!-- ADMIN -->
+          <section class="card" data-roles="ADMIN">
+            <div class="card__head"><h2>Akses teknis</h2></div>
+            <div class="card__body">
+              <div class="banner banner--offline">
+                <span>⛨</span>
+                <div class="small"><strong>Administrator teknis tidak dapat menggerakkan pintu.</strong>
+                  Otoritas aktuasi berada pada operator dan Pekaseh site. Gunakan menu kalibrasi
+                  bila posisi encoder dilaporkan tidak sesuai.</div>
+              </div>
+              <div class="row mt-4"><button class="btn btn--sm">Kalibrasi</button><a class="btn btn--sm" href="10-admin.html">Riwayat perangkat</a></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card__head"><h2>Status command terakhir</h2></div>
+            <div class="card__body">
+              <div class="timeline">
+                <div class="timeline__item">
+                  <span class="timeline__dot"></span>
+                  <div>
+                    <div class="between"><strong>EXECUTED</strong><span class="small muted">12:00:48</span></div>
+                    <div class="small muted">Posisi 34,0% terverifikasi (target 40,0% tidak tercapai;
+                      encoder report 34%).</div>
+                  </div>
+                </div>
+                <div class="timeline__item">
+                  <span class="timeline__dot"></span>
+                  <div>
+                    <div class="between"><strong>ACK diterima</strong><span class="small muted">12:00:41</span></div>
+                    <div class="small muted">ACCEPTED · posisi aktual 33,8%</div>
+                  </div>
+                </div>
+                <div class="timeline__item">
+                  <span class="timeline__dot"></span>
+                  <div>
+                    <div class="between"><strong>SENT</strong><span class="small muted">12:00:32</span></div>
+                    <div class="small muted">HMAC-SHA256 valid · nonce 8f3a…c0e · expires 90 s</div>
+                  </div>
+                </div>
+                <div class="timeline__item">
+                  <span class="timeline__dot timeline__dot--muted"></span>
+                  <div>
+                    <div class="between"><strong>Divalidasi</strong><span class="small muted">12:00:31</span></div>
+                    <div class="small muted">9 lapis validasi lulus · rule SUBAK-AIR-021 v3</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card card--soft">
+            <div class="card__head"><h3>Bila komunikasi gagal</h3></div>
+            <div class="card__body">
+              <p class="small">Pintu tetap dapat dioperasikan dengan <strong>handwheel mekanis</strong>
+                di lokasi. E-STOP fisik bekerja tanpa backend. Jangan mengirim ulang perintah yang
+                sudah kedaluwarsa.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="card mt-4">
+        <div class="card__head"><h2>Riwayat event &amp; command</h2><span class="spacer"></span>
+          <span class="small muted">termasuk perintah yang ditolak</span></div>
+        <div class="card__body card__body--flush">
+          <div class="table-wrap">
+            <table class="table table--cards table--flush">
+              <thead><tr><th>Waktu</th><th>Jenis</th><th>Posisi</th><th>Pelaku</th><th>Status</th><th>Catatan</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Waktu">14:12 WITA</td><td data-label="Jenis">MODE_CHANGE</td><td data-label="Posisi">0% → 0%</td><td data-label="Pelaku">Perangkat</td><td data-label="Status"><span class="badge badge--critical">FAULT</span></td><td data-label="Catatan">Overcurrent 2,84 A</td></tr>
+                <tr><td data-label="Waktu">12:00 WITA</td><td data-label="Jenis">COMMAND</td><td data-label="Posisi">18% → 34%</td><td data-label="Pelaku">Operator (Sari)</td><td data-label="Status"><span class="badge badge--ok">EXECUTED</span></td><td data-label="Catatan">Target 40% tidak tercapai</td></tr>
+                <tr><td data-label="Waktu">11:58 WITA</td><td data-label="Jenis">COMMAND</td><td data-label="Posisi">18% → 18%</td><td data-label="Pelaku">Operator (Sari)</td><td data-label="Status"><span class="badge badge--warning">REJECTED</span></td><td data-label="Catatan">INTERLOCK_LIMIT</td></tr>
+                <tr><td data-label="Waktu">11:40 WITA</td><td data-label="Jenis">COMMAND</td><td data-label="Posisi">18% → 18%</td><td data-label="Pelaku">Operator (Sari)</td><td data-label="Status"><span class="badge badge--offline">EXPIRED</span></td><td data-label="Catatan">Tidak ada ACK dalam 90 s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="note mt-6">
+        <b>Catatan desain.</b> Tidak ada tombol “coba lagi” untuk command EXPIRED atau UNKNOWN.
+        Pengguna harus membuat perintah baru sehingga seluruh validasi dijalankan ulang.
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

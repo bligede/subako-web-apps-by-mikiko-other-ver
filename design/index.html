@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Paket Arsitektur v0.1 · Indeks Prototipe</title>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .hub-hero { background: linear-gradient(155deg, #10443b 0%, #0a3b33 60%, #0d554a 100%); color: #cfe2dd; padding: 44px 0 38px; }
+  .hub-hero .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .hub-hero h1 { color: #fff; font-size: 34px; line-height: 42px; letter-spacing: -0.02em; }
+  .hub-hero p { margin-top: 10px; max-width: 62ch; color: #a8cbc3; font-size: 14px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .screen-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; text-decoration: none; color: inherit; transition: border-color 120ms ease, transform 120ms ease; }
+  .screen-card:hover { border-color: var(--teal-600); text-decoration: none; transform: translateY(-1px); }
+  .screen-card .idx { font-family: var(--mono); font-size: 11px; color: var(--slate); }
+  .screen-card h3 { font-size: 15px; }
+  .screen-card p { font-size: 12px; color: var(--slate); line-height: 18px; }
+  .screen-card .go { margin-top: auto; font-size: 12px; font-weight: 600; color: var(--teal-700); }
+  .thumb { height: 78px; border-radius: 8px; border: 1px solid var(--line); background: #f8fbf9; display: grid; place-items: center; color: var(--forest-800); }
+</style>
+</head>
+<body data-page="index">
+
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>SUBAKO Web-PWA v0.1 · seluruh angka adalah data simulasi</span>
+  <span class="spacer"></span>
+  <a href="../docs/00-paket-arsitektur.md">Paket arsitektur</a>
+  <a href="../docs/api/openapi.yaml">OpenAPI</a>
+  <a href="styleguide.html">Styleguide</a>
+</div>
+
+<header class="hub-hero">
+  <div class="wrap">
+    <div class="row" style="gap:12px;margin-bottom:18px">
+      <span class="badge badge--demo">TAHAP B — REVIEW</span>
+      <span class="badge" style="background:rgba(255,255,255,.12);color:#eaf5f2;border-color:rgba(255,255,255,.2)">High-Fidelity UI</span>
+      <span class="badge" style="background:rgba(255,255,255,.12);color:#eaf5f2;border-color:rgba(255,255,255,.2)">10 Deliverable</span>
+    </div>
+    <h1>SUBAKO — Smart Irrigation Management Platform</h1>
+    <p>
+      Prototipe antarmuka untuk review Product Owner. Semua layar memakai data <strong>DEMO</strong>
+      dan tidak terhubung ke backend maupun perangkat. Gunakan pemilih role di bagian atas
+      setiap layar untuk melihat perbedaan hak akses.
+    </p>
+    <div class="row row--wrap mt-6">
+      <a class="btn btn--primary" href="02-dashboard.html">Buka Dashboard</a>
+      <a class="btn" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:#fff" href="01-login.html">Halaman Login</a>
+      <a class="btn" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:#fff" href="styleguide.html">Design System</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:28px;padding-bottom:64px">
+
+  <div class="banner banner--info" role="note">
+    <span>ℹ️</span>
+    <div>
+      <strong>Ini prototipe, bukan aplikasi.</strong> Tidak ada autentikasi nyata, tidak ada
+      perintah yang dikirim, dan tidak ada data lapangan. Implementasi React pada Phase 1–2
+      akan mengikuti design system dan kontrak API yang sama.
+    </div>
+  </div>
+
+  <div class="grid g-4 mt-6" style="align-items:stretch">
+    <a class="card screen-card" href="01-login.html">
+      <div class="thumb">🔐</div>
+      <span class="idx">01</span><h3>Login & Sesi</h3>
+      <p>Autentikasi, pesan error generik, akun terkunci, catatan sesi.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="02-dashboard.html">
+      <div class="thumb">▦</div>
+      <span class="idx">02</span><h3>Dashboard</h3>
+      <p>KPI, status site, alert aktif, grafik 24 jam, aktivitas terakhir.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="03-monitoring.html">
+      <div class="thumb">◎</div>
+      <span class="idx">03</span><h3>Monitoring</h3>
+      <p>Peta Subak, ketinggian air, debit, dan kesehatan perangkat.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="04-gates.html">
+      <div class="thumb">⌗</div>
+      <span class="idx">04</span><h3>Daftar Pintu Air</h3>
+      <p>Status mode, bukaan, baterai, dan freshness per pintu.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="05-gate-detail.html">
+      <div class="thumb">⚙︎</div>
+      <span class="idx">05</span><h3>Detail Pintu</h3>
+      <p>State terlapor, panel aksi berlapis validasi, timeline command.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="06-rules.html">
+      <div class="thumb">▤</div>
+      <span class="idx">06</span><h3>Aturan & Jadwal</h3>
+      <p>Lifecycle versi, approval, entitlement tempek, jadwal harian.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="07-ledger.html">
+      <div class="thumb">⛓</div>
+      <span class="idx">07</span><h3>Buku Catatan Air</h3>
+      <p>Entri append-only, hash chain, verifikasi integritas, kompensasi.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="08-alerts.html">
+      <div class="thumb">⚠︎</div>
+      <span class="idx">08</span><h3>Peringatan</h3>
+      <p>Severity, evidence, acknowledgement, resolusi dengan bukti.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="09-reports.html">
+      <div class="thumb">▥</div>
+      <span class="idx">09</span><h3>Laporan</h3>
+      <p>Distribusi harian, kinerja pintu, deviasi, ekspor PDF/Excel.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="10-admin.html">
+      <div class="thumb">⛨</div>
+      <span class="idx">10</span><h3>Administrasi</h3>
+      <p>Pengguna, perangkat & provisioning, audit, kesehatan sistem.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="11-mobile.html">
+      <div class="thumb">▭</div>
+      <span class="idx">11</span><h3>Tampilan Mobile</h3>
+      <p>Bottom navigation, kartu sensor, panel aksi sticky.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+    <a class="card screen-card" href="styleguide.html">
+      <div class="thumb">◑</div>
+      <span class="idx">SG</span><h3>Styleguide</h3>
+      <p>Token warna, tipografi, komponen, dan bukti kontras WCAG.</p>
+      <span class="go">Buka layar →</span>
+    </a>
+  </div>
+
+  <div class="grid g-2 mt-6">
+    <section class="card">
+      <div class="card__head"><h2>Cara memakai prototipe</h2></div>
+      <div class="card__body stack">
+        <p class="small">1. Setiap layar memiliki <strong>pemilih role</strong> di bar hitam paling atas.
+           Elemen yang tidak berhak disembunyikan sesuai matriks RBAC
+           (<a href="../docs/09-rbac-matrix.md">docs/09</a>).</p>
+        <p class="small">2. Badge <span class="badge badge--demo">DEMO</span> bersifat permanen — data simulasi
+           tidak boleh tampil sebagai data aktual.</p>
+        <p class="small">3. Coba role <strong>Petani</strong> lalu <strong>Operator</strong> pada halaman Detail Pintu:
+           panel aksi berubah dari read-only menjadi form command.</p>
+        <p class="small">4. Coba role <strong>Administrator</strong>: menu Pintu tetap terlihat, tetapi
+           tombol command tidak tersedia (pemisahan otoritas teknis dan tata kelola).</p>
+      </div>
+    </section>
+    <section class="card">
+      <div class="card__head"><h2>Celah yang perlu keputusan PO</h2></div>
+      <div class="card__body">
+        <table class="table">
+          <thead><tr><th>Kode</th><th>Keputusan</th><th class="right">Prioritas</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">K-01</td><td>Bentuk referensi Paruman</td><td class="right"><span class="badge badge--critical">BLOCKING</span></td></tr>
+            <tr><td class="mono">K-02</td><td>Model hak air (proporsi/volume/rotasi)</td><td class="right"><span class="badge badge--critical">BLOCKING</span></td></tr>
+            <tr><td class="mono">K-03</td><td>Ketersediaan sensor debit</td><td class="right"><span class="badge badge--critical">BLOCKING</span></td></tr>
+            <tr><td class="mono">K-06</td><td>Pemegang secret &amp; metode signing</td><td class="right"><span class="badge badge--critical">BLOCKING</span></td></tr>
+            <tr><td class="mono">K-09</td><td>Penyimpangan palet untuk aksesibilitas</td><td class="right"><span class="badge badge--warning">SEGERA</span></td></tr>
+          </tbody>
+        </table>
+        <p class="small muted mt-4">Daftar lengkap: <a href="../docs/11-keputusan-terbuka.md">docs/11-keputusan-terbuka.md</a></p>
+      </div>
+    </section>
+  </div>
+
+  <p class="small muted mt-6">
+    SUBAKO · Smart Irrigation Management Platform · by Mikiko Technology ·
+    Tradition decides. Technology measures. SUBAKO executes.
+  </p>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

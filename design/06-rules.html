@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Aturan Air &amp; Jadwal</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="rules" data-title="Tata Kelola Air">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Aturan air · versioning &amp; approval Paruman</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Tata Kelola Air</h1>
+          <p class="lede">Keputusan Paruman dijadikan aturan yang dapat dieksekusi. Aturan aktif
+            tidak dapat diubah — perubahan selalu menghasilkan versi baru.</p>
+        </div>
+        <span class="spacer"></span>
+        <span class="badge badge--demo">DEMO</span>
+        <div class="segmented" data-tabs="gov">
+          <button data-tab="aturan" class="is-active">Aturan Air</button>
+          <button data-tab="jadwal">Jadwal Distribusi</button>
+          <button data-tab="paruman">Referensi Paruman</button>
+        </div>
+      </div>
+
+      <div data-panel="gov">
+
+        <!-- ATURAN -->
+        <div data-tab-panel="aturan">
+          <div class="grid g-side-3">
+            <section class="card">
+              <div class="card__head"><h2>Daftar aturan</h2><span class="spacer"></span>
+                <span data-roles="PEKASEH"><button class="btn btn--sm btn--primary">Buat draft aturan</button></span>
+              </div>
+              <div class="card__body card__body--flush">
+                <div class="table-wrap">
+                  <table class="table table--cards table--flush">
+                    <thead><tr><th>Kode</th><th>Judul</th><th>Status</th><th class="right">Versi</th><th>Berlaku</th><th class="right">Disetujui</th></tr></thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Kode"><strong class="mono">SUBAK-AIR-021</strong></td>
+                        <td data-label="Judul">Giliran Tempek Sari &amp; Kedua — Nov 2026</td>
+                        <td data-label="Status"><span class="badge badge--published">PUBLISHED</span></td>
+                        <td data-label="Versi" class="right num">v3</td>
+                        <td data-label="Berlaku">1–15 Nov 2026</td>
+                        <td data-label="Disetujui" class="right">2 Pekaseh</td>
+                      </tr>
+                      <tr>
+                        <td data-label="Kode"><strong class="mono">SUBAK-AIR-022</strong></td>
+                        <td data-label="Judul">Giliran Tempek Ketiga — Nov 2026</td>
+                        <td data-label="Status"><span class="badge badge--review">IN REVIEW</span></td>
+                        <td data-label="Versi" class="right num">v1</td>
+                        <td data-label="Berlaku">rencana 16–30 Nov</td>
+                        <td data-label="Disetujui" class="right">—</td>
+                      </tr>
+                      <tr>
+                        <td data-label="Kode"><strong class="mono">SUBAK-AIR-020</strong></td>
+                        <td data-label="Judul">Giliran Tempek Sari — Okt 2026</td>
+                        <td data-label="Status"><span class="badge badge--superseded">SUPERSEDED</span></td>
+                        <td data-label="Versi" class="right num">v2</td>
+                        <td data-label="Berlaku">15–31 Okt 2026</td>
+                        <td data-label="Disetujui" class="right">2 Pekaseh</td>
+                      </tr>
+                      <tr>
+                        <td data-label="Kode"><strong class="mono">SUBAK-AIR-019</strong></td>
+                        <td data-label="Judul">Pembagian musim kemarau</td>
+                        <td data-label="Status"><span class="badge badge--expired">EXPIRED</span></td>
+                        <td data-label="Versi" class="right num">v1</td>
+                        <td data-label="Berlaku">1–14 Okt 2026</td>
+                        <td data-label="Disetujui" class="right">1 Pekaseh</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card__foot">Aturan aktif &amp; superseded tetap dapat dibaca untuk audit.</div>
+            </section>
+
+            <div class="stack">
+              <section class="card">
+                <div class="card__head"><h2>SUBAK-AIR-021</h2><span class="spacer"></span><span class="badge badge--published">v3 PUBLISHED</span></div>
+                <div class="card__body stack">
+                  <div class="stepper">
+                    <span class="stepper__step is-done"><b>✓</b>Draft</span><span class="stepper__line"></span>
+                    <span class="stepper__step is-done"><b>✓</b>Review</span><span class="stepper__line"></span>
+                    <span class="stepper__step is-done"><b>✓</b>Approved</span><span class="stepper__line"></span>
+                    <span class="stepper__step is-current"><b>4</b>Published</span>
+                  </div>
+                  <dl class="kv">
+                    <dt>Mode alokasi</dt><dd>ROTATION + PROPORTIONAL</dd>
+                    <dt>Berlaku</dt><dd>1–15 Nov 2026</dd>
+                    <dt>Toleransi</dt><dd>±10%</dd>
+                    <dt>Referensi</dt><dd>Paruman 12 Okt 2026</dd>
+                    <dt>Checksum</dt><dd class="mono">9f2c…4ab1</dd>
+                  </dl>
+                  <hr class="divider">
+                  <h3 style="font-size:13px" class="mb-2">Hak per tempek</h3>
+                  <div class="table-wrap">
+                    <table class="table">
+                      <thead><tr><th>Tempek</th><th class="right">Proporsi</th><th class="right">Giliran</th></tr></thead>
+                      <tbody>
+                        <tr><td>Subak Sari</td><td class="right num">40%</td><td class="right">06:00–10:00</td></tr>
+                        <tr><td>Tempek Kedua</td><td class="right num">35%</td><td class="right">10:00–14:00</td></tr>
+                        <tr><td>Tempek Ketiga</td><td class="right num">25%</td><td class="right">14:00–17:00</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row" data-roles="PEKASEH">
+                    <button class="btn btn--sm">Ajukan versi baru</button>
+                    <button class="btn btn--sm" disabled title="Rule aktif tidak dapat diedit">Edit (nonaktif)</button>
+                  </div>
+                  <p class="hint" data-roles="PEKASEH">Tombol edit dinonaktifkan pada rule PUBLISHED.
+                    Server juga menolak PATCH dengan <span class="mono">409 RULE_IMMUTABLE</span>.</p>
+                  <div class="banner banner--offline" data-roles="ADMIN">
+                    <span>⛨</span><div class="small">Administrator teknis tidak memiliki wewenang membuat
+                      atau menyetujui aturan distribusi air.</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card card--soft">
+                <div class="card__head"><h3>Versi &amp; approval</h3></div>
+                <div class="card__body">
+                  <div class="timeline">
+                    <div class="timeline__item"><span class="timeline__dot"></span>
+                      <div><div class="between"><strong>v3 dipublikasikan</strong><span class="small muted">28 Okt</span></div>
+                        <div class="small muted">oleh Pekaseh Wayan · SOE terpenuhi</div></div></div>
+                    <div class="timeline__item"><span class="timeline__dot"></span>
+                      <div><div class="between"><strong>v3 disetujui</strong><span class="small muted">27 Okt</span></div>
+                        <div class="small muted">2 approval · catatan rapat terlampir</div></div></div>
+                    <div class="timeline__item"><span class="timeline__dot timeline__dot--muted"></span>
+                      <div><div class="between"><strong>v2 → superseded</strong><span class="small muted">27 Okt</span></div>
+                        <div class="small muted">tetap dapat dibaca</div></div></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- JADWAL -->
+        <div data-tab-panel="jadwal" hidden>
+          <div class="filter-bar">
+            <span class="chip is-active">30 Okt 2026</span>
+            <span class="chip">29 Okt</span><span class="chip">31 Okt</span>
+            <span class="spacer" style="flex:1"></span>
+            <span class="small muted">Zona waktu WITA · aturan SUBAK-AIR-021 v3</span>
+          </div>
+
+          <div class="grid g-4">
+            <section class="card kpi"><span class="kpi__label">Slot hari ini</span><span class="kpi__value">3</span><span class="kpi__meta">06:00–17:00 WITA</span></section>
+            <section class="card kpi"><span class="kpi__label">Volume terjadwal</span><span class="kpi__value">1.290<small>m³</small></span><span class="kpi__meta">berdasarkan rule v3</span></section>
+            <section class="card kpi"><span class="kpi__label">Realisasi</span><span class="kpi__value">96<small>%</small></span><span class="kpi__meta">2 slot di luar toleransi</span></section>
+            <section class="card kpi"><span class="kpi__label">Giliran Anda</span><span class="kpi__value">10:00</span><span class="kpi__meta">Tempek Kedua · 35%</span></section>
+          </div>
+
+          <section class="card mt-4">
+            <div class="card__head"><h2>Jadwal 30 Oktober 2026</h2><span class="spacer"></span>
+              <div class="row"><button class="btn btn--sm">Tambah ke kalender</button><button class="btn btn--sm btn--primary">Unduh PDF</button></div></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Waktu</th><th>Tempek</th><th>Pintu</th><th class="right">Hak</th><th class="right">Target</th><th class="right">Aktual</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="Waktu">06:00–10:00</td>
+                      <td data-label="Tempek"><strong>Subak Sari</strong></td>
+                      <td data-label="Pintu">GATE-01</td>
+                      <td data-label="Hak" class="right num">40%</td>
+                      <td data-label="Target" class="right num">39,0 L/d</td>
+                      <td data-label="Aktual" class="right num">38,4 L/d</td>
+                      <td data-label="Status"><span class="badge badge--ok">Selesai · sesuai</span></td>
+                    </tr>
+                    <tr style="background:#f6fdfa">
+                      <td data-label="Waktu">10:00–14:00</td>
+                      <td data-label="Tempek"><strong>Tempek Kedua</strong> <span class="badge badge--info">giliran Anda</span></td>
+                      <td data-label="Pintu">GATE-02</td>
+                      <td data-label="Hak" class="right num">35%</td>
+                      <td data-label="Target" class="right num">34,1 L/d</td>
+                      <td data-label="Aktual" class="right num">32,0 L/d</td>
+                      <td data-label="Status"><span class="badge badge--warning">Deviasi −6,2%</span></td>
+                    </tr>
+                    <tr>
+                      <td data-label="Waktu">14:00–17:00</td>
+                      <td data-label="Tempek"><strong>Tempek Ketiga</strong></td>
+                      <td data-label="Pintu">GATE-05</td>
+                      <td data-label="Hak" class="right num">25%</td>
+                      <td data-label="Target" class="right num">24,4 L/d</td>
+                      <td data-label="Aktual" class="right num">—</td>
+                      <td data-label="Status"><span class="badge badge--offline">Belum berjalan</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Deviasi dihitung dari debit terukur; volume ditandai
+              <strong>MEASURED</strong> hanya bila sensor debit tersedia.</div>
+          </section>
+
+          <div class="banner banner--info mt-4">
+            <span>ℹ️</span>
+            <div><strong>Bila tidak ada aturan berlaku:</strong> halaman menampilkan pesan
+              “Tidak ada jadwal untuk tanggal ini”, disertai rule terakhir yang berlaku dan
+              kontak Pekaseh — bukan jadwal kosong tanpa penjelasan.</div>
+          </div>
+        </div>
+
+        <!-- PARUMAN -->
+        <div data-tab-panel="paruman" hidden>
+          <section class="card">
+            <div class="card__head"><h2>Referensi Paruman</h2><span class="spacer"></span>
+              <span data-roles="PEKASEH"><button class="btn btn--sm btn--primary">Catat referensi</button></span></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Tanggal</th><th>Nomor</th><th>Judul keputusan</th><th>Dokumen</th><th>Dicatat oleh</th></tr></thead>
+                  <tbody>
+                    <tr><td data-label="Tanggal">12 Okt 2026</td><td data-label="Nomor" class="mono">PAR-2026-10-12</td><td data-label="Judul">Penetapan giliran Nov 2026</td><td data-label="Dokumen"><a href="#">paruman-12-okt.pdf</a></td><td data-label="Dicatat">Pekaseh Wayan</td></tr>
+                    <tr><td data-label="Tanggal">28 Sep 2026</td><td data-label="Nomor" class="mono">PAR-2026-09-28</td><td data-label="Judul">Perbaikan bangunan bagi 2</td><td data-label="Dokumen"><a href="#">berita-acara.pdf</a></td><td data-label="Dicatat">Pekaseh Wayan</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Setiap aturan wajib merujuk minimal satu referensi Paruman;
+              tanpa referensi, pengajuan ditolak <span class="mono">422 MEETING_REFERENCE_REQUIRED</span>.</div>
+          </section>
+        </div>
+      </div>
+
+      <div class="note mt-6">
+        <b>Catatan desain.</b> Status rule ditampilkan sebagai lifecycle, bukan sekadar badge:
+        reviewer harus dapat melihat siapa menyetujui, kapan, dan atas dasar Paruman mana.
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

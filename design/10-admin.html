@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="id" data-role="ADMIN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Administrasi</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="admin" data-title="Administrasi">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Administrasi · pengguna, perangkat, audit, kesehatan sistem</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH">Pekaseh</option>
+      <option value="ADMIN" selected>Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Administrasi</h1>
+          <p class="lede">Pengelolaan pengguna, perangkat, dan audit teknis. Administrator
+            tidak dapat mengubah aturan air atau menggerakkan pintu.</p>
+        </div>
+        <span class="spacer"></span>
+        <span class="badge badge--demo">DEMO</span>
+        <div class="segmented" data-tabs="adm">
+          <button data-tab="pengguna" class="is-active">Pengguna</button>
+          <button data-tab="perangkat">Perangkat</button>
+          <button data-tab="audit" data-roles="ADMIN">Audit</button>
+          <button data-tab="sistem" data-roles="ADMIN">Kesehatan Sistem</button>
+        </div>
+      </div>
+
+      <div data-panel="adm">
+
+        <div data-tab-panel="pengguna">
+          <section class="card">
+            <div class="card__head"><h2>Pengguna</h2><span class="spacer"></span>
+              <button class="btn btn--sm btn--primary">Tambah pengguna</button></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Site access</th><th>Terakhir masuk</th><th>Status</th><th class="right">Aksi</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="Nama"><strong>Wayan Sudira</strong></td>
+                      <td data-label="Email" class="mono">pekaseh@demo</td>
+                      <td data-label="Role"><span class="badge badge--ok">PEKASEH</span></td>
+                      <td data-label="Site">Subak Sari (GOVERN)</td>
+                      <td data-label="Masuk">Hari ini 06:12</td>
+                      <td data-label="Status"><span class="badge badge--published">Aktif</span></td>
+                      <td data-label="Aksi" class="right"><button class="btn btn--sm">Kelola</button></td>
+                    </tr>
+                    <tr>
+                      <td data-label="Nama"><strong>Ni Luh Sari</strong></td>
+                      <td data-label="Email" class="mono">operator@demo</td>
+                      <td data-label="Role"><span class="badge badge--info">OPERATOR</span></td>
+                      <td data-label="Site">Subak Sari (OPERATE)</td>
+                      <td data-label="Masuk">Hari ini 05:58</td>
+                      <td data-label="Status"><span class="badge badge--published">Aktif</span></td>
+                      <td data-label="Aksi" class="right"><button class="btn btn--sm">Kelola</button></td>
+                    </tr>
+                    <tr>
+                      <td data-label="Nama"><strong>I Made Arta</strong></td>
+                      <td data-label="Email" class="mono">petani@demo</td>
+                      <td data-label="Role"><span class="badge badge--neutral">VIEWER</span></td>
+                      <td data-label="Site">Subak Sari (VIEW)</td>
+                      <td data-label="Masuk">Kemarin 18:40</td>
+                      <td data-label="Status"><span class="badge badge--published">Aktif</span></td>
+                      <td data-label="Aksi" class="right"><button class="btn btn--sm">Kelola</button></td>
+                    </tr>
+                    <tr>
+                      <td data-label="Nama"><strong>Admin Mikiko</strong></td>
+                      <td data-label="Email" class="mono">admin@mikiko.id</td>
+                      <td data-label="Role"><span class="badge badge--critical">ADMIN</span></td>
+                      <td data-label="Site">Semua site (ADMIN)</td>
+                      <td data-label="Masuk">Hari ini 07:05</td>
+                      <td data-label="Status"><span class="badge badge--published">Aktif</span></td>
+                      <td data-label="Aksi" class="right"><button class="btn btn--sm">Kelola</button></td>
+                    </tr>
+                    <tr>
+                      <td data-label="Nama"><strong>Ketut Budi</strong></td>
+                      <td data-label="Email" class="mono">ketut@demo</td>
+                      <td data-label="Role"><span class="badge badge--neutral">OPERATOR</span></td>
+                      <td data-label="Site">Subak Kedampal (OPERATE)</td>
+                      <td data-label="Masuk">12 Okt 2026</td>
+                      <td data-label="Status"><span class="badge badge--offline">Nonaktif</span></td>
+                      <td data-label="Aksi" class="right"><button class="btn btn--sm">Kelola</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Reset password memaksa penggantian saat login berikutnya dan
+              mencabut seluruh sesi aktif.</div>
+          </section>
+
+          <div class="grid g-2 mt-4">
+            <section class="card">
+              <div class="card__head"><h3>Detail pengguna · Ni Luh Sari</h3></div>
+              <div class="card__body stack--sm">
+                <dl class="kv">
+                  <dt>Role</dt><dd>OPERATOR</dd>
+                  <dt>Site access</dt><dd>Subak Sari · OPERATE</dd>
+                  <dt>Permission efektif</dt><dd>8 permission</dd>
+                  <dt>Status akun</dt><dd>Aktif</dd>
+                </dl>
+                <hr class="divider">
+                <span class="kpi__label">Permission</span>
+                <div class="row row--wrap">
+                  <span class="badge badge--neutral">dashboard.view</span>
+                  <span class="badge badge--neutral">telemetry.read</span>
+                  <span class="badge badge--neutral">gate.read</span>
+                  <span class="badge badge--ok">gate.command</span>
+                  <span class="badge badge--neutral">alert.acknowledge</span>
+                  <span class="badge badge--neutral">alert.resolve</span>
+                  <span class="badge badge--neutral">ledger.view</span>
+                  <span class="badge badge--neutral">report.view</span>
+                </div>
+                <p class="hint mt-4">Permission ditetapkan dari role; tidak ada penambahan ad-hoc
+                  per pengguna pada v0.1.</p>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card__head"><h3>Perubahan terakhir</h3></div>
+              <div class="card__body">
+                <div class="timeline">
+                  <div class="timeline__item"><span class="timeline__dot"></span>
+                    <div><div class="between"><strong>Site access ditambahkan</strong><span class="small muted">28 Okt 09:12</span></div>
+                      <div class="small muted">oleh Admin Mikiko · Subak Sari (OPERATE)</div></div></div>
+                  <div class="timeline__item"><span class="timeline__dot timeline__dot--muted"></span>
+                    <div><div class="between"><strong>Role diberikan</strong><span class="small muted">20 Okt 14:02</span></div>
+                      <div class="small muted">oleh Pekaseh Wayan · OPERATOR</div></div></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div data-tab-panel="perangkat" hidden>
+          <div class="grid g-4">
+            <section class="card kpi"><span class="kpi__label">Total perangkat</span><span class="kpi__value">12</span><span class="kpi__meta">10 aktif · 2 unprovisioned</span></section>
+            <section class="card kpi"><span class="kpi__label">Mode SIMULATION</span><span class="kpi__value">10</span><span class="kpi__meta">demo &amp; pengujian</span></section>
+            <section class="card kpi"><span class="kpi__label">Mode LIVE</span><span class="kpi__value">0</span><span class="kpi__meta">belum ada commissioning</span></section>
+            <section class="card kpi"><span class="kpi__label">Firmware tertua</span><span class="kpi__value">0.9.2</span><span class="kpi__meta">1 perangkat</span></section>
+          </div>
+
+          <section class="card mt-4">
+            <div class="card__head"><h2>Perangkat</h2><span class="spacer"></span>
+              <div class="row"><button class="btn btn--sm">Register perangkat</button>
+                <button class="btn btn--sm btn--primary">Provisioning</button></div></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Device ID</th><th>devEUI</th><th>Jenis</th><th>Penugasan</th><th>Mode data</th><th>Kalibrasi</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td data-label="Device ID" class="mono">subako-gate-01</td><td data-label="devEUI" class="mono">ac1f09…3b7e</td><td data-label="Jenis">GATE_NODE</td><td data-label="Penugasan">GATE-01</td><td data-label="Mode"><span class="badge badge--warning">SIMULATION</span></td><td data-label="Kalibrasi">v3</td><td data-label="Status"><span class="badge badge--published">ACTIVE</span></td></tr>
+                    <tr><td data-label="Device ID" class="mono">subako-gate-02</td><td data-label="devEUI" class="mono">ac1f09…4c81</td><td data-label="Jenis">GATE_NODE</td><td data-label="Penugasan">GATE-02</td><td data-label="Mode"><span class="badge badge--warning">SIMULATION</span></td><td data-label="Kalibrasi">v2</td><td data-label="Status"><span class="badge badge--published">ACTIVE</span></td></tr>
+                    <tr><td data-label="Device ID" class="mono">subako-node-12</td><td data-label="devEUI" class="mono">ac1f09…9d20</td><td data-label="Jenis">MEASURE_NODE</td><td data-label="Penugasan">—</td><td data-label="Mode"><span class="badge badge--offline">—</span></td><td data-label="Kalibrasi">—</td><td data-label="Status"><span class="badge badge--stale">UNPROVISIONED</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Provisioning mengembalikan <span class="mono">device_secret</span>
+              satu kali; nilai tidak pernah ditampilkan ulang di UI.</div>
+          </section>
+
+          <div class="grid g-2 mt-4">
+            <section class="card">
+              <div class="card__head"><h3>Capability · subako-gate-01</h3></div>
+              <div class="card__body">
+                <div class="row row--wrap">
+                  <span class="badge badge--ok">gate_position_pct</span>
+                  <span class="badge badge--ok">water_level</span>
+                  <span class="badge badge--ok">flow</span>
+                  <span class="badge badge--ok">battery</span>
+                  <span class="badge badge--neutral">motor_current</span>
+                  <span class="badge badge--neutral">encoder</span>
+                </div>
+                <p class="hint mt-4">Capability menentukan perintah yang sah. Perintah di luar
+                  capability ditolak <span class="mono">422 CAPABILITY_UNSUPPORTED</span>.</p>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card__head"><h3>Gateway</h3></div>
+              <div class="card__body">
+                <dl class="kv">
+                  <dt>GATEWAY-01 · Tabanan</dt><dd><span class="badge badge--live">online</span></dd>
+                  <dt>Node terhubung</dt><dd>12</dd>
+                  <dt>Uplink 1 jam</dt><dd>720</dd>
+                  <dt>ChirpStack</dt><dd>v4.8 · terhubung</dd>
+                </dl>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div data-tab-panel="audit" data-roles="ADMIN" hidden>
+          <section class="card">
+            <div class="card__head"><h2>Audit teknis</h2><span class="spacer"></span>
+              <span class="small muted">append-only · tidak dapat diubah</span></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Waktu</th><th>Aktor</th><th>Aksi</th><th>Entitas</th><th>Ringkasan</th><th>Request ID</th></tr></thead>
+                  <tbody>
+                    <tr><td data-label="Waktu">14:12:07</td><td data-label="Aktor">Sistem</td><td data-label="Aksi"><span class="badge badge--critical">ALERT_CREATED</span></td><td data-label="Entitas">GATE-02</td><td data-label="Ringkasan">Motor overcurrent 2,84 A</td><td data-label="Req" class="mono">0f9d2c8a</td></tr>
+                    <tr><td data-label="Waktu">12:00:31</td><td data-label="Aktor">Operator Sari</td><td data-label="Aksi"><span class="badge badge--warning">COMMAND_SENT</span></td><td data-label="Entitas">GATE-01</td><td data-label="Ringkasan">SET_POSITION 40% · rule v3</td><td data-label="Req" class="mono">7b21e0c4</td></tr>
+                    <tr><td data-label="Waktu">09:12:44</td><td data-label="Aktor">Admin Mikiko</td><td data-label="Aksi"><span class="badge badge--info">USER_SITE_ACCESS</span></td><td data-label="Entitas">Ni Luh Sari</td><td data-label="Ringkasan">Tambah akses Subak Sari (OPERATE)</td><td data-label="Req" class="mono">3c9a77de</td></tr>
+                    <tr><td data-label="Waktu">08:30:02</td><td data-label="Aktor">Pekaseh Wayan</td><td data-label="Aksi"><span class="badge badge--published">RULE_PUBLISHED</span></td><td data-label="Entitas">SUBAK-AIR-021 v3</td><td data-label="Ringkasan">Berlaku 1–15 Nov 2026</td><td data-label="Req" class="mono">a1f45b09</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Filter: waktu, aktor, aksi, site. Ekspor audit memerlukan permission
+              <span class="mono">audit.read</span>.</div>
+          </section>
+        </div>
+
+        <div data-tab-panel="sistem" data-roles="ADMIN" hidden>
+          <div class="grid g-4">
+            <section class="card kpi"><span class="kpi__label">Ingest / jam</span><span class="kpi__value">3.142</span><span class="kpi__meta"><span class="badge badge--live">normal</span></span></section>
+            <section class="card kpi"><span class="kpi__label">Reject rate</span><span class="kpi__value">0,4<small>%</small></span><span class="kpi__meta">13 payload ditolak</span></section>
+            <section class="card kpi"><span class="kpi__label">Klien WebSocket</span><span class="kpi__value">7</span><span class="kpi__meta">2 site</span></section>
+            <section class="card kpi"><span class="kpi__label">Backlog job</span><span class="kpi__value">2</span><span class="kpi__meta">1 running · 1 queued</span></section>
+          </div>
+
+          <div class="grid g-2 mt-4">
+            <section class="card">
+              <div class="card__head"><h2>Komponen</h2></div>
+              <div class="card__body">
+                <dl class="kv">
+                  <dt>API</dt><dd><span class="badge badge--ok">sehat</span></dd>
+                  <dt>PostgreSQL / TimescaleDB</dt><dd><span class="badge badge--ok">sehat</span> 1,8 GB</dd>
+                  <dt>Mosquitto</dt><dd><span class="badge badge--ok">terhubung</span></dd>
+                  <dt>ChirpStack</dt><dd><span class="badge badge--ok">terhubung</span></dd>
+                  <dt>IoT Bridge</dt><dd><span class="badge badge--ok">sehat</span></dd>
+                  <dt>Worker</dt><dd><span class="badge badge--warning">backlog 2</span></dd>
+                </dl>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card__head"><h2>Integritas ledger per site</h2></div>
+              <div class="card__body">
+                <div class="table-wrap">
+                  <table class="table">
+                    <thead><tr><th>Site</th><th>Status</th><th>Verifikasi terakhir</th></tr></thead>
+                    <tbody>
+                      <tr><td>Subak Sari</td><td><span class="badge badge--ok">VALID</span></td><td>14:30 WITA</td></tr>
+                      <tr><td>Subak Kedampal</td><td><span class="badge badge--ok">VALID</span></td><td>13:05 WITA</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="banner banner--offline mt-4">
+                  <span>⛨</span>
+                  <div class="small">Administrator dapat memverifikasi dan mengekspor ledger,
+                    tetapi tidak dapat mengubah entri — termasuk entri yang salah.</div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

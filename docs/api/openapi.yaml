@@ -1,0 +1,1755 @@
+openapi: 3.1.0
+info:
+  title: SUBAKO API
+  version: 0.1.0
+  description: |
+    REST API untuk SUBAKO Web-PWA v0.1 (Smart Irrigation Management Platform).
+
+    Prinsip yang mengikat:
+    - Rule aktif tidak dapat diubah; perubahan menghasilkan versi baru.
+    - Command aktuasi wajib melalui validasi berlapis dan `Idempotency-Key`.
+    - Ledger dan audit bersifat append-only (tidak ada PATCH/DELETE).
+    - `freshness` dihitung server, bukan klien.
+    - Semua daftar menerapkan site scope; site di luar scope mengembalikan 403.
+  contact:
+    name: Mikiko Technology
+    email: engineering@mikiko.id
+  license:
+    name: Proprietary
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development
+  - url: https://subako.mikiko.id/api/v1
+    description: Pilot / Production
+tags:
+  - name: Auth
+  - name: Sites
+  - name: Devices
+  - name: Telemetry
+  - name: Gates
+  - name: Rules
+  - name: Ledger
+  - name: Alerts
+  - name: Reports
+  - name: Admin
+security:
+  - bearerAuth: []
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login pengguna
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+      responses:
+        '200':
+          description: Access token + profil; refresh token dikirim sebagai cookie HttpOnly
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [access_token, expires_in, user]
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string, const: Bearer }
+                  expires_in: { type: integer, example: 900 }
+                  user: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '423': { $ref: '#/components/responses/Problem' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Rotasi refresh token
+      security: []
+      responses:
+        '200':
+          description: Access token baru
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+                  expires_in: { type: integer }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Revoke sesi aktif
+      responses:
+        '204': { description: Sesi di-revoke }
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Profil, role, permission, dan site yang dapat diakses
+      responses:
+        '200':
+          description: Profil pengguna
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/ws-ticket:
+    post:
+      tags: [Auth]
+      summary: Ticket sekali pakai untuk koneksi WebSocket
+      responses:
+        '200':
+          description: Ticket berumur 30 detik
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticket: { type: string }
+                  expires_in: { type: integer, example: 30 }
+  /sites:
+    get:
+      tags: [Sites]
+      summary: Daftar site dalam scope pengguna
+      responses:
+        '200':
+          description: Daftar site
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Site' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+    post:
+      tags: [Sites]
+      summary: Buat site baru (default SIMULATION + PROVISIONING)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SiteInput' }
+      responses:
+        '201':
+          description: Site dibuat
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Site' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /sites/{site_id}:
+    parameters:
+      - $ref: '#/components/parameters/SiteId'
+    get:
+      tags: [Sites]
+      summary: Detail site
+      responses:
+        '200':
+          description: Detail site
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Site' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Sites]
+      summary: Ubah metadata site
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SiteInput' }
+      responses:
+        '200':
+          description: Site diperbarui
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Site' }
+  /sites/{site_id}/overview:
+    parameters:
+      - $ref: '#/components/parameters/SiteId'
+    get:
+      tags: [Sites]
+      summary: Agregat dashboard satu site
+      responses:
+        '200':
+          description: Ringkasan dashboard
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SiteOverview' }
+  /devices:
+    get:
+      tags: [Devices]
+      summary: Daftar perangkat
+      parameters:
+        - { name: site_id, in: query, schema: { type: string, format: uuid } }
+        - { name: kind, in: query, schema: { type: string, enum: [GATE_NODE, MEASURE_NODE, GATEWAY] } }
+        - { name: status, in: query, schema: { type: string, enum: [UNPROVISIONED, ACTIVE, QUARANTINED, INACTIVE] } }
+        - { name: freshness, in: query, schema: { $ref: '#/components/schemas/Freshness' } }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Daftar perangkat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Device' }
+                  page: { $ref: '#/components/schemas/Page' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+    post:
+      tags: [Devices]
+      summary: Registrasi perangkat baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [dev_eui, kind, site_id]
+              properties:
+                dev_eui: { type: string, pattern: '^[0-9a-fA-F]{16}$' }
+                kind: { type: string, enum: [GATE_NODE, MEASURE_NODE] }
+                site_id: { type: string, format: uuid }
+                label: { type: string }
+      responses:
+        '201':
+          description: Perangkat terdaftar dengan status UNPROVISIONED
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Device' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /devices/{device_id}:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    get:
+      tags: [Devices]
+      summary: Detail perangkat
+      responses:
+        '200':
+          description: Detail perangkat
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Device' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Devices]
+      summary: Ubah assignment / interval / status aktif
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gate_id: { type: [string, 'null'], format: uuid }
+                expected_interval_s: { type: integer, minimum: 15, maximum: 3600 }
+                is_active: { type: boolean }
+      responses:
+        '200':
+          description: Perangkat diperbarui
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Device' }
+  /devices/{device_id}/health:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    get:
+      tags: [Devices]
+      summary: Kesehatan perangkat terkini
+      responses:
+        '200':
+          description: Kesehatan perangkat
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DeviceHealth' }
+  /devices/{device_id}/history:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    get:
+      tags: [Devices]
+      summary: Riwayat kesehatan perangkat
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Riwayat kesehatan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/DeviceHealth' }
+                  page: { $ref: '#/components/schemas/Page' }
+  /devices/{device_id}/provision:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    post:
+      tags: [Devices]
+      summary: Provisioning perangkat (membuat device secret sekali tampil)
+      responses:
+        '200':
+          description: Perangkat ter-provisioning; secret hanya dikembalikan sekali
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device_id: { type: string, format: uuid }
+                  device_secret: { type: string, description: Ditampilkan sekali, simpan di secret store }
+                  chirpstack_status: { type: string, enum: [SYNCED, PENDING, FAILED] }
+        '409': { $ref: '#/components/responses/Problem' }
+  /devices/{device_id}/calibration:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    post:
+      tags: [Devices]
+      summary: Catat versi kalibrasi baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [parameters, method]
+              properties:
+                parameters: { type: object, additionalProperties: true }
+                method: { type: string, enum: [FIELD_OFFSET, TWO_POINT, FACTORY] }
+                notes: { type: string }
+      responses:
+        '201':
+          description: Kalibrasi tercatat
+  /telemetry/latest:
+    get:
+      tags: [Telemetry]
+      summary: Nilai telemetri terakhir per perangkat
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: gate_id, in: query, schema: { type: string, format: uuid } }
+        - { name: device_id, in: query, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Nilai terakhir + freshness policy
+          headers:
+            X-Data-Mode:
+              schema: { $ref: '#/components/schemas/DataMode' }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/TelemetryLatest' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /telemetry/history:
+    get:
+      tags: [Telemetry]
+      summary: Riwayat pembacaan sensor
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: device_id, in: query, schema: { type: string, format: uuid } }
+        - { name: channel, in: query, schema: { type: string, example: water_level_up } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - { name: granularity, in: query, schema: { type: string, enum: [raw, 1m, 1h], default: 1m } }
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Deret waktu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ReadingPoint' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+        '422': { $ref: '#/components/responses/Problem' }
+  /telemetry/water-level:
+    get:
+      tags: [Telemetry]
+      summary: Ketinggian air hulu/hilir + ambang
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: gate_id, in: query, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Seri ketinggian air dan ambang operasional
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  series:
+                    type: array
+                    items: { $ref: '#/components/schemas/Series' }
+                  thresholds:
+                    type: object
+                    additionalProperties: { type: number }
+  /telemetry/flow:
+    get:
+      tags: [Telemetry]
+      summary: Debit air dan target rule aktif
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: gate_id, in: query, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Debit terukur, target, dan deviasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  series:
+                    type: array
+                    items: { $ref: '#/components/schemas/Series' }
+                  target_lps: { type: [number, 'null'] }
+                  deviation_pct: { type: [number, 'null'] }
+  /telemetry/battery:
+    get:
+      tags: [Telemetry]
+      summary: Status baterai per perangkat
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Baterai per perangkat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        device_id: { type: string, format: uuid }
+                        device_label: { type: string }
+                        battery_pct: { type: [number, 'null'] }
+                        battery_v: { type: [number, 'null'] }
+                        ts: { type: string, format: date-time }
+                        freshness: { $ref: '#/components/schemas/Freshness' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /gates:
+    get:
+      tags: [Gates]
+      summary: Daftar pintu air
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: mode, in: query, schema: { $ref: '#/components/schemas/GateMode' } }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Daftar pintu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Gate' }
+                  page: { $ref: '#/components/schemas/Page' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /gates/{gate_id}:
+    parameters:
+      - $ref: '#/components/parameters/GateId'
+    get:
+      tags: [Gates]
+      summary: Detail pintu
+      responses:
+        '200':
+          description: Detail pintu + state + telemetri terakhir
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GateDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /gates/{gate_id}/status:
+    parameters:
+      - $ref: '#/components/parameters/GateId'
+    get:
+      tags: [Gates]
+      summary: State ringkas pintu (dipakai sebagai fallback polling)
+      responses:
+        '200':
+          description: State pintu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GateState' }
+  /gates/{gate_id}/events:
+    parameters:
+      - $ref: '#/components/parameters/GateId'
+    get:
+      tags: [Gates]
+      summary: Riwayat event pintu
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Event pintu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/GateEvent' }
+                  page: { $ref: '#/components/schemas/Page' }
+  /gates/{gate_id}/commands:
+    parameters:
+      - $ref: '#/components/parameters/GateId'
+    get:
+      tags: [Gates]
+      summary: Riwayat command
+      responses:
+        '200':
+          description: Riwayat command
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Command' }
+                  page: { $ref: '#/components/schemas/Page' }
+    post:
+      tags: [Gates]
+      summary: Kirim perintah aktuasi
+      description: |
+        Wajib menyertakan `Idempotency-Key`. Command melewati 9 lapis validasi:
+        authentication, authorization, site access, rule validity, expiry,
+        device capability, device availability, duplicate/replay, state safety.
+        Status `EXECUTED` hanya diberikan setelah ACK dan verifikasi posisi aktual.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommandInput' }
+      responses:
+        '202':
+          description: Command diterima dan dikirim; status akhir menunggu ACK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Command' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409':
+          description: Ditolak oleh validasi (MODE_BLOCKED, COMMAND_IN_FLIGHT, RULE_EXPIRED, DUPLICATE_COMMAND)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422': { $ref: '#/components/responses/Problem' }
+  /gates/{gate_id}/commands/{command_id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/GateId'
+      - name: command_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Gates]
+      summary: Batalkan command yang belum di-ACK
+      responses:
+        '202':
+          description: Permintaan pembatalan dikirim
+        '409': { $ref: '#/components/responses/Problem' }
+  /rules:
+    get:
+      tags: [Rules]
+      summary: Daftar aturan air
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/RuleStatus' }
+      responses:
+        '200':
+          description: Daftar aturan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Rule' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+    post:
+      tags: [Rules]
+      summary: Buat aturan baru (draft versi 1)
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleInput' }
+      responses:
+        '201':
+          description: Aturan dibuat sebagai DRAFT
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Rule' }
+        '422': { $ref: '#/components/responses/Problem' }
+  /rules/{rule_id}:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    get:
+      tags: [Rules]
+      summary: Detail aturan dan versi aktif
+      responses:
+        '200':
+          description: Detail aturan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Rule' }
+    patch:
+      tags: [Rules]
+      summary: Ubah draft (hanya DRAFT)
+      description: Untuk rule yang sudah PUBLISHED, endpoint mengembalikan 409 RULE_IMMUTABLE.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleInput' }
+      responses:
+        '200':
+          description: Draft diperbarui
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Rule' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /rules/{rule_id}/submit:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    post:
+      tags: [Rules]
+      summary: Ajukan draft untuk review
+      responses:
+        '200': { description: Status IN_REVIEW }
+        '422': { $ref: '#/components/responses/Problem' }
+  /rules/{rule_id}/approve:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    post:
+      tags: [Rules]
+      summary: Setujui versi aturan (Pekaseh)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [note]
+              properties:
+                note: { type: string, minLength: 10 }
+      responses:
+        '200': { description: Status APPROVED }
+        '403': { description: Termasuk pelanggaran separation of duties }
+        '409': { $ref: '#/components/responses/Problem' }
+  /rules/{rule_id}/reject:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    post:
+      tags: [Rules]
+      summary: Tolak versi aturan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 10 }
+      responses:
+        '200': { description: Status REJECTED }
+  /rules/{rule_id}/publish:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    post:
+      tags: [Rules]
+      summary: Terbitkan versi aturan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [effective_from]
+              properties:
+                effective_from: { type: string, format: date }
+                effective_to: { type: [string, 'null'], format: date }
+                note: { type: string }
+      responses:
+        '200':
+          description: Versi diterbitkan; versi sebelumnya menjadi SUPERSEDED
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RuleVersion' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '422': { $ref: '#/components/responses/Problem' }
+  /rules/{rule_id}/versions:
+    parameters:
+      - $ref: '#/components/parameters/RuleId'
+    get:
+      tags: [Rules]
+      summary: Daftar versi aturan
+      responses:
+        '200':
+          description: Versi aturan (immutable)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/RuleVersion' }
+  /schedule:
+    get:
+      tags: [Rules]
+      summary: Jadwal distribusi per tanggal (WITA)
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: date, in: query, required: true, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Jadwal dan realisasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string, format: date }
+                  rule_version: { $ref: '#/components/schemas/RuleVersion' }
+                  slots:
+                    type: array
+                    items: { $ref: '#/components/schemas/ScheduleSlot' }
+        '404': { description: Tidak ada rule published yang mencakup tanggal tersebut }
+  /ledger:
+    get:
+      tags: [Ledger]
+      summary: Daftar entri buku catatan air
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: gate_id, in: query, schema: { type: string, format: uuid } }
+        - { name: tempek_id, in: query, schema: { type: string, format: uuid } }
+        - name: entry_type
+          in: query
+          schema: { type: string, enum: [DISTRIBUTION, GATE_ACTIVITY, COMPENSATION, SYSTEM_NOTE] }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Daftar entri append-only
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/LedgerEntry' }
+                  page: { $ref: '#/components/schemas/Page' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /ledger/{entry_id}:
+    parameters:
+      - name: entry_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Ledger]
+      summary: Detail entri dan entri terkait
+      responses:
+        '200':
+          description: Entri ledger
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LedgerEntry' }
+  /ledger/verify:
+    get:
+      tags: [Ledger]
+      summary: Verifikasi integritas hash chain
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Hasil verifikasi (status VALID atau INVALID + first_broken_seq)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LedgerVerification' }
+  /ledger/seals:
+    get:
+      tags: [Ledger]
+      summary: Daftar seal harian
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Seal harian
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        seal_date: { type: string, format: date }
+                        entry_count: { type: integer }
+                        seal_hash: { type: string }
+                        last_entry_hash: { type: string }
+  /ledger/export:
+    get:
+      tags: [Ledger]
+      summary: Ekspor ledger (CSV atau PDF)
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - { name: format, in: query, schema: { type: string, enum: [csv, pdf], default: pdf } }
+      responses:
+        '200':
+          description: File ekspor
+          content:
+            text/csv:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+  /ledger/compensations:
+    post:
+      tags: [Ledger]
+      summary: Buat entri kompensasi (koreksi tanpa mengubah entri asal)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [original_entry_id, reason, volume_m3]
+              properties:
+                original_entry_id: { type: string, format: uuid }
+                reason: { type: string, minLength: 20 }
+                volume_m3: { type: number }
+      responses:
+        '201':
+          description: Entri kompensasi dibuat
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LedgerEntry' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /alerts:
+    get:
+      tags: [Alerts]
+      summary: Daftar peringatan
+      parameters:
+        - { name: site_id, in: query, schema: { type: string, format: uuid } }
+        - { name: status, in: query, schema: { type: string, enum: [OPEN, ACKNOWLEDGED, RESOLVED] } }
+        - name: severity
+          in: query
+          schema: { $ref: '#/components/schemas/Severity' }
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Daftar peringatan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Alert' }
+                  page: { $ref: '#/components/schemas/Page' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /alerts/summary:
+    get:
+      tags: [Alerts]
+      summary: Hitungan peringatan per severity/status
+      responses:
+        '200':
+          description: Ringkasan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  open:
+                    type: object
+                    additionalProperties: { type: integer }
+  /alerts/{alert_id}:
+    parameters:
+      - name: alert_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Alerts]
+      summary: Detail peringatan + evidence
+      responses:
+        '200':
+          description: Detail peringatan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Alert' }
+  /alerts/{alert_id}/acknowledge:
+    parameters:
+      - name: alert_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Alerts]
+      summary: Akui peringatan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [note]
+              properties:
+                note: { type: string, minLength: 5 }
+                assigned_to: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Status ACKNOWLEDGED
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Alert' }
+  /alerts/{alert_id}/resolve:
+    parameters:
+      - name: alert_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Alerts]
+      summary: Selesaikan peringatan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [resolution]
+              properties:
+                resolution: { type: string, minLength: 10 }
+                sensor_ref: { type: string, description: Referensi pembacaan yang membuktikan pemulihan }
+      responses:
+        '200':
+          description: Status RESOLVED
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Alert' }
+  /reports/daily:
+    get:
+      tags: [Reports]
+      summary: Laporan distribusi harian
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: date, in: query, required: true, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Ringkasan harian
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReportSummary' }
+  /reports/weekly:
+    get:
+      tags: [Reports]
+      summary: Laporan distribusi mingguan
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: week_start, in: query, required: true, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Ringkasan mingguan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReportSummary' }
+  /reports/monthly:
+    get:
+      tags: [Reports]
+      summary: Laporan distribusi bulanan
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - { name: month, in: query, required: true, schema: { type: string, pattern: '^[0-9]{4}-[0-9]{2}$' } }
+      responses:
+        '200':
+          description: Ringkasan bulanan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReportSummary' }
+  /reports/export:
+    get:
+      tags: [Reports]
+      summary: Minta ekspor laporan (async job)
+      parameters:
+        - { name: site_id, in: query, required: true, schema: { type: string, format: uuid } }
+        - name: report
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, gate-performance, device-performance, energy, incidents, deviation, operator-activity]
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - { name: format, in: query, schema: { type: string, enum: [pdf, xlsx], default: pdf } }
+      responses:
+        '202':
+          description: Job dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id: { type: string, format: uuid }
+                  status: { type: string, enum: [QUEUED, RUNNING, DONE, FAILED] }
+  /reports/export/{job_id}:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Reports]
+      summary: Status dan tautan unduhan ekspor
+      responses:
+        '200':
+          description: Status job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id: { type: string, format: uuid }
+                  status: { type: string, enum: [QUEUED, RUNNING, DONE, FAILED] }
+                  download_url: { type: [string, 'null'], format: uri }
+                  expires_at: { type: [string, 'null'], format: date-time }
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: Daftar pengguna
+      parameters:
+        - { name: site_id, in: query, schema: { type: string, format: uuid } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Daftar pengguna
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/User' }
+                  page: { $ref: '#/components/schemas/Page' }
+    post:
+      tags: [Admin]
+      summary: Buat pengguna
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, full_name, role, site_ids]
+              properties:
+                email: { type: string, format: email }
+                full_name: { type: string }
+                role: { $ref: '#/components/schemas/RoleCode' }
+                site_ids:
+                  type: array
+                  items: { type: string, format: uuid }
+                site_level:
+                  type: string
+                  enum: [VIEW, OPERATE, GOVERN, ADMIN]
+                  default: VIEW
+      responses:
+        '201':
+          description: Pengguna dibuat
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /admin/users/{user_id}:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    patch:
+      tags: [Admin]
+      summary: Ubah pengguna, role, site access, status aktif
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name: { type: string }
+                role: { $ref: '#/components/schemas/RoleCode' }
+                is_active: { type: boolean }
+                site_ids:
+                  type: array
+                  items: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Pengguna diperbarui
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '409':
+          description: Operasi tidak sah (mis. menonaktifkan admin terakhir)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+  /admin/audit:
+    get:
+      tags: [Admin]
+      summary: Audit teknis append-only
+      parameters:
+        - { name: site_id, in: query, schema: { type: string, format: uuid } }
+        - { name: action, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Audit event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AuditEvent' }
+                  page: { $ref: '#/components/schemas/Page' }
+  /admin/system-health:
+    get:
+      tags: [Admin]
+      summary: Kesehatan sistem untuk administrator teknis
+      responses:
+        '200':
+          description: Ringkasan kesehatan sistem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ingest_per_hour: { type: integer }
+                  reject_rate_pct: { type: number }
+                  ws_clients: { type: integer }
+                  mqtt_connected: { type: boolean }
+                  db_size_gb: { type: number }
+                  job_backlog: { type: integer }
+                  devices_by_mode:
+                    type: object
+                    properties:
+                      SIMULATION: { type: integer }
+                      LIVE: { type: integer }
+                  ledger_integrity:
+                    type: object
+                    additionalProperties: { type: string }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    GateId:
+      name: gate_id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    RuleId:
+      name: rule_id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    From:
+      name: from
+      in: query
+      schema: { type: string, format: date-time }
+    To:
+      name: to
+      in: query
+      schema: { type: string, format: date-time }
+  responses:
+    Problem:
+      description: Kesalahan dengan format Problem Details
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unauthorized:
+      description: Token tidak ada/kedaluwarsa
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Forbidden:
+      description: Tidak memiliki permission atau site access
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: Objek tidak ditemukan atau di luar scope
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    RateLimited:
+      description: Terlalu banyak permintaan
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    DataMode:
+      type: string
+      enum: [SIMULATION, LIVE]
+    Freshness:
+      type: string
+      enum: [LIVE, STALE, OFFLINE]
+    GateMode:
+      type: string
+      enum: [AUTO, MANUAL, HOLD, FAULT, IDLE]
+    Severity:
+      type: string
+      enum: [INFO, LOW, MEDIUM, HIGH, CRITICAL]
+    RoleCode:
+      type: string
+      enum: [VIEWER, OPERATOR, PEKASEH, ADMIN]
+    RuleStatus:
+      type: string
+      enum: [DRAFT, IN_REVIEW, APPROVED, PUBLISHED, SUPERSEDED, REJECTED, EXPIRED]
+    Meta:
+      type: object
+      properties:
+        server_time: { type: string, format: date-time }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+        freshness_policy:
+          type: object
+          properties:
+            interval_s: { type: integer }
+            stale_after_s: { type: integer }
+            offline_after_s: { type: integer }
+    Page:
+      type: object
+      properties:
+        next_cursor: { type: [string, 'null'] }
+        has_more: { type: boolean }
+    Problem:
+      type: object
+      required: [title, status, code]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string, example: RULE_EXPIRED }
+        detail: { type: string }
+        instance: { type: string }
+        request_id: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
+    Me:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        full_name: { type: string }
+        role: { $ref: '#/components/schemas/RoleCode' }
+        permissions:
+          type: array
+          items: { type: string }
+        sites:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string, format: uuid }
+              name: { type: string }
+              level: { type: string, enum: [VIEW, OPERATE, GOVERN, ADMIN] }
+              data_mode: { $ref: '#/components/schemas/DataMode' }
+        requires_password_change: { type: boolean }
+    Site:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        code: { type: string, example: SUBAK-DEMO-01 }
+        name: { type: string }
+        regency: { type: string }
+        village: { type: string }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+        status: { type: string, enum: [PROVISIONING, ACTIVE, SUSPENDED] }
+        separation_of_duties: { type: boolean }
+        unit_pref: { type: string, enum: [m, cm] }
+    SiteInput:
+      type: object
+      properties:
+        name: { type: string }
+        regency: { type: string }
+        village: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        unit_pref: { type: string, enum: [m, cm] }
+        separation_of_duties: { type: boolean }
+    SiteOverview:
+      type: object
+      properties:
+        site_id: { type: string, format: uuid }
+        gates_total: { type: integer }
+        gates_online: { type: integer }
+        gates_fault: { type: integer }
+        devices_online: { type: integer }
+        devices_total: { type: integer }
+        avg_level_m: { type: [number, 'null'] }
+        avg_flow_lps: { type: [number, 'null'] }
+        lowest_battery_pct: { type: [number, 'null'] }
+        alerts_open: { type: integer }
+        alerts_critical: { type: integer }
+        schedule_compliance_pct: { type: [number, 'null'] }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        last_updated: { type: string, format: date-time }
+    Device:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        device_id: { type: string, example: subako-gate-01 }
+        dev_eui: { type: string }
+        site_id: { type: string, format: uuid }
+        gate_id: { type: [string, 'null'], format: uuid }
+        kind: { type: string, enum: [GATE_NODE, MEASURE_NODE] }
+        status: { type: string, enum: [UNPROVISIONED, ACTIVE, QUARANTINED, INACTIVE] }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+        firmware_version: { type: [string, 'null'] }
+        calibration_version: { type: [integer, 'null'] }
+        expected_interval_s: { type: integer }
+        capabilities:
+          type: array
+          items:
+            type: object
+            properties:
+              capability: { type: string, example: gate_position_pct }
+              enabled: { type: boolean }
+              config: { type: object, additionalProperties: true }
+        last_communication_at: { type: [string, 'null'], format: date-time }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+    DeviceHealth:
+      type: object
+      properties:
+        device_id: { type: string, format: uuid }
+        recorded_at: { type: string, format: date-time }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        battery_pct: { type: [number, 'null'] }
+        battery_v: { type: [number, 'null'] }
+        rssi_dbm: { type: [integer, 'null'] }
+        snr_db: { type: [number, 'null'] }
+        fcnt_up: { type: [integer, 'null'] }
+        sensor_health:
+          type: object
+          additionalProperties: { type: string }
+        state: { type: string, enum: [LIVE, STALE, OFFLINE, FAULT] }
+    ChannelValue:
+      type: object
+      properties:
+        value: { type: [number, 'null'] }
+        unit: { type: string }
+        quality: { type: string, enum: [OK, SUSPECT, BAD, MISSING] }
+    TelemetryLatest:
+      type: object
+      properties:
+        device_id: { type: string, format: uuid }
+        gate_id: { type: [string, 'null'], format: uuid }
+        gate_code: { type: [string, 'null'] }
+        site_id: { type: string, format: uuid }
+        ts: { type: string, format: date-time }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        age_s: { type: integer }
+        mode: { $ref: '#/components/schemas/GateMode' }
+        gate_position_pct: { type: [number, 'null'] }
+        channels:
+          type: object
+          additionalProperties: { $ref: '#/components/schemas/ChannelValue' }
+    ReadingPoint:
+      type: object
+      properties:
+        ts: { type: string, format: date-time }
+        value: { type: [number, 'null'] }
+        quality: { type: string, enum: [OK, SUSPECT, BAD, MISSING] }
+        derived: { type: boolean }
+    Series:
+      type: object
+      properties:
+        name: { type: string }
+        channel: { type: string }
+        unit: { type: string }
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/ReadingPoint' }
+    GateState:
+      type: object
+      properties:
+        gate_id: { type: string, format: uuid }
+        mode: { $ref: '#/components/schemas/GateMode' }
+        position_pct: { type: [number, 'null'] }
+        target_pct: { type: [number, 'null'] }
+        actuator_state: { type: [string, 'null'], enum: [IDLE, OPENING, CLOSING, STOPPED, FAULT, null] }
+        motor_current_a: { type: [number, 'null'] }
+        limit_open: { type: [boolean, 'null'] }
+        limit_closed: { type: [boolean, 'null'] }
+        estop: { type: [boolean, 'null'] }
+        mode_reported_at: { type: [string, 'null'], format: date-time }
+        updated_at: { type: string, format: date-time }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        last_command_id: { type: [string, 'null'], format: uuid }
+    Gate:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        site_id: { type: string, format: uuid }
+        code: { type: string, example: GATE-01 }
+        name: { type: string }
+        tempek_name: { type: [string, 'null'] }
+        gate_type: { type: string, enum: [SLUICE, WEIR, SPLITTER] }
+        max_opening_pct: { type: number }
+        design_flow_lps: { type: [number, 'null'] }
+        state: { $ref: '#/components/schemas/GateState' }
+        device_freshness: { $ref: '#/components/schemas/Freshness' }
+    GateDetail:
+      allOf:
+        - $ref: '#/components/schemas/Gate'
+        - type: object
+          properties:
+            device:
+              type: object
+              properties:
+                id: { type: string, format: uuid }
+                device_id: { type: string }
+                firmware_version: { type: [string, 'null'] }
+                rssi_dbm: { type: [integer, 'null'] }
+                snr_db: { type: [number, 'null'] }
+                battery_pct: { type: [number, 'null'] }
+                battery_v: { type: [number, 'null'] }
+                last_communication_at: { type: [string, 'null'], format: date-time }
+            active_rule_version:
+              oneOf:
+                - $ref: '#/components/schemas/RuleVersion'
+                - type: 'null'
+            telemetry_24h:
+              type: array
+              items: { $ref: '#/components/schemas/Series' }
+            recent_events:
+              type: array
+              items: { $ref: '#/components/schemas/GateEvent' }
+            recent_commands:
+              type: array
+              items: { $ref: '#/components/schemas/Command' }
+    GateEvent:
+      type: object
+      properties:
+        id: { type: integer }
+        gate_id: { type: string, format: uuid }
+        occurred_at: { type: string, format: date-time }
+        event_type: { type: string, example: COMMAND_EXECUTED }
+        position_before: { type: [number, 'null'] }
+        position_after: { type: [number, 'null'] }
+        actor_type: { type: string, enum: [USER, DEVICE, SYSTEM] }
+        actor_label: { type: [string, 'null'] }
+        command_id: { type: [string, 'null'], format: uuid }
+    CommandInput:
+      type: object
+      required: [action, reason]
+      properties:
+        action: { type: string, enum: [SET_POSITION, OPEN, CLOSE, HOLD, RELEASE_HOLD] }
+        target_pct: { type: [number, 'null'], minimum: 0, maximum: 100 }
+        rule_version_id: { type: [string, 'null'], format: uuid }
+        expected_rule_checksum: { type: [string, 'null'] }
+        reason: { type: string, minLength: 10 }
+    Command:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        gate_id: { type: string, format: uuid }
+        action: { type: string }
+        target_pct: { type: [number, 'null'] }
+        status:
+          type: string
+          enum: [PENDING_SIGN, SENT, ACKNOWLEDGED, EXECUTED, REJECTED, EXPIRED, FAILED_TO_SEND, UNKNOWN, DIVERGED]
+        rule_version: { type: [integer, 'null'] }
+        rule_checksum: { type: [string, 'null'] }
+        issued_at: { type: string, format: date-time }
+        expires_at: { type: string, format: date-time }
+        expires_in_s: { type: [integer, 'null'] }
+        actor_label: { type: [string, 'null'] }
+        requires_ack: { type: boolean }
+        failure_reason: { type: [string, 'null'] }
+        ack:
+          type: [object, 'null']
+          properties:
+            received_at: { type: string, format: date-time }
+            status: { type: string, enum: [ACCEPTED, REJECTED] }
+            reason: { type: [string, 'null'] }
+    RuleVersion:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        rule_id: { type: string, format: uuid }
+        version_no: { type: integer }
+        status: { $ref: '#/components/schemas/RuleStatus' }
+        effective_from: { type: [string, 'null'], format: date }
+        effective_to: { type: [string, 'null'], format: date }
+        allocation_mode: { type: string, enum: [PROPORTIONAL, VOLUME, ROTATION] }
+        tolerance_pct: { type: number }
+        checksum: { type: string }
+        meeting_reference:
+          type: object
+          properties:
+            reference_no: { type: string }
+            meeting_date: { type: string, format: date }
+            title: { type: string }
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              tempek_name: { type: string }
+              entitlement_pct: { type: [number, 'null'] }
+              entitlement_m3_per_day: { type: [number, 'null'] }
+              priority: { type: integer }
+        schedules:
+          type: array
+          items: { $ref: '#/components/schemas/ScheduleSlot' }
+        published_at: { type: [string, 'null'], format: date-time }
+        published_by: { type: [string, 'null'] }
+        created_by: { type: string }
+        created_at: { type: string, format: date-time }
+    Rule:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        site_id: { type: string, format: uuid }
+        code: { type: string, example: SUBAK-AIR-021 }
+        title: { type: string }
+        current_status: { $ref: '#/components/schemas/RuleStatus' }
+        current_version: { $ref: '#/components/schemas/RuleVersion' }
+        versions_count: { type: integer }
+        created_at: { type: string, format: date-time }
+    RuleInput:
+      type: object
+      required: [title, meeting_reference_id, allocation_mode]
+      properties:
+        title: { type: string }
+        meeting_reference_id: { type: string, format: uuid }
+        allocation_mode: { type: string, enum: [PROPORTIONAL, VOLUME, ROTATION] }
+        effective_from: { type: string, format: date }
+        effective_to: { type: [string, 'null'], format: date }
+        tolerance_pct: { type: number, default: 10 }
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              tempek_id: { type: string, format: uuid }
+              entitlement_pct: { type: [number, 'null'] }
+              entitlement_m3_per_day: { type: [number, 'null'] }
+              priority: { type: integer }
+        schedules:
+          type: array
+          items: { $ref: '#/components/schemas/ScheduleSlot' }
+    ScheduleSlot:
+      type: object
+      properties:
+        gate_code: { type: string }
+        tempek_name: { type: string }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        target_flow_lps: { type: [number, 'null'] }
+        entitlement_pct: { type: [number, 'null'] }
+        actual_flow_lps: { type: [number, 'null'] }
+        deviation_pct: { type: [number, 'null'] }
+    LedgerEntry:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        site_id: { type: string, format: uuid }
+        seq: { type: integer }
+        occurred_at: { type: string, format: date-time }
+        entry_type: { type: string, enum: [DISTRIBUTION, GATE_ACTIVITY, COMPENSATION, SYSTEM_NOTE] }
+        gate_code: { type: [string, 'null'] }
+        tempek_name: { type: [string, 'null'] }
+        rule_version: { type: [integer, 'null'] }
+        entitlement_pct: { type: [number, 'null'] }
+        volume_m3: { type: [number, 'null'] }
+        position_before: { type: [number, 'null'] }
+        position_after: { type: [number, 'null'] }
+        measurement_status: { type: string, enum: [MEASURED, ESTIMATED, MISSING] }
+        actor_type: { type: string, enum: [USER, DEVICE, SYSTEM] }
+        actor_label: { type: [string, 'null'] }
+        original_entry_id: { type: [string, 'null'], format: uuid }
+        reason: { type: [string, 'null'] }
+        prev_hash: { type: [string, 'null'] }
+        entry_hash: { type: string }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+    LedgerVerification:
+      type: object
+      properties:
+        site_id: { type: string, format: uuid }
+        from: { type: string, format: date-time }
+        to: { type: string, format: date-time }
+        entries_checked: { type: integer }
+        status: { type: string, enum: [VALID, INVALID] }
+        first_broken_seq: { type: [integer, 'null'] }
+        seals_checked: { type: integer }
+        seals_matched: { type: integer }
+        last_entry_hash: { type: string }
+        verified_at: { type: string, format: date-time }
+        verified_by: { type: string }
+    Alert:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        site_id: { type: string, format: uuid }
+        device_id: { type: [string, 'null'], format: uuid }
+        gate_id: { type: [string, 'null'], format: uuid }
+        alert_type: { type: string, example: MOTOR_OVERCURRENT }
+        severity: { $ref: '#/components/schemas/Severity' }
+        status: { type: string, enum: [OPEN, ACKNOWLEDGED, RESOLVED] }
+        first_seen_at: { type: string, format: date-time }
+        last_seen_at: { type: string, format: date-time }
+        evidence:
+          type: object
+          additionalProperties: true
+        suggested_action: { type: [string, 'null'] }
+        assigned_to: { type: [string, 'null'] }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+    ReportSummary:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            from: { type: string, format: date-time }
+            to: { type: string, format: date-time }
+        site_id: { type: string, format: uuid }
+        data_mode: { $ref: '#/components/schemas/DataMode' }
+        total_volume_m3: { type: number }
+        measured_pct: { type: number }
+        deviation_pct: { type: [number, 'null'] }
+        alerts_open: { type: integer }
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        disclaimer: { type: string }
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        full_name: { type: string }
+        role: { $ref: '#/components/schemas/RoleCode' }
+        is_active: { type: boolean }
+        sites:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string, format: uuid }
+              name: { type: string }
+              level: { type: string, enum: [VIEW, OPERATE, GOVERN, ADMIN] }
+        last_login_at: { type: [string, 'null'], format: date-time }
+    AuditEvent:
+      type: object
+      properties:
+        id: { type: integer }
+        occurred_at: { type: string, format: date-time }
+        actor_type: { type: string, enum: [USER, DEVICE, SYSTEM] }
+        actor_label: { type: [string, 'null'] }
+        actor_role: { type: [string, 'null'] }
+        site_id: { type: [string, 'null'], format: uuid }
+        action: { type: string, example: RULE_PUBLISHED }
+        entity_type: { type: [string, 'null'] }
+        entity_id: { type: [string, 'null'] }
+        summary: { type: string }
+        request_id: { type: [string, 'null'] }

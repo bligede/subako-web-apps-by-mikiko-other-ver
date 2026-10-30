@@ -1,0 +1,55 @@
+# SUBAKO Phase 1 — db + API + web.
+# Data telemetri tetap SIMULATION: belum ada Mosquitto/ChirpStack pada phase ini.
+services:
+  db:
+    image: timescale/timescaledb:2.15.2-pg16
+    environment:
+      POSTGRES_DB: subako
+      POSTGRES_USER: subako
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-subako_dev_only}
+    ports:
+      - "5432:5432"
+    volumes:
+      - subako_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U subako -d subako"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    environment:
+      SUBAKO_ENV: production
+      SUBAKO_DATABASE_URL: postgresql+psycopg://subako:${POSTGRES_PASSWORD:-subako_dev_only}@db:5432/subako
+      SUBAKO_JWT_SECRET: ${SUBAKO_JWT_SECRET:?Set SUBAKO_JWT_SECRET di .env}
+      SUBAKO_SEED_DEMO: "true"
+      SUBAKO_SIMULATION_ENABLED: "true"
+      SUBAKO_SIMULATION_INTERVAL_S: "5"
+      SUBAKO_CORS_ORIGINS: ${SUBAKO_CORS_ORIGINS:-http://localhost:8080}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  subako_db:

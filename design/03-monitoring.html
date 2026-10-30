@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Monitoring</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="monitoring" data-title="Monitoring">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Monitoring · peta, ketinggian air, debit, kesehatan perangkat</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Monitoring</h1>
+          <p class="lede">Subak Sari · 14:32 WITA · semua waktu ditampilkan WITA, disimpan UTC.</p>
+        </div>
+        <span class="spacer"></span>
+        <div class="segmented" data-tabs="monitor">
+          <button data-tab="peta" class="is-active">Peta Subak</button>
+          <button data-tab="level">Ketinggian Air</button>
+          <button data-tab="flow">Debit</button>
+          <button data-tab="devices">Perangkat</button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <span class="chip is-active">Subak Sari <button aria-label="Hapus filter">×</button></span>
+        <span class="chip">Bangunan Bagi Utama</span>
+        <span class="chip">Semua perangkat</span>
+        <span class="chip">24 jam</span>
+        <span class="spacer" style="flex:1"></span>
+        <span class="badge badge--demo">DEMO</span>
+      </div>
+
+      <div data-panel="monitor">
+        <!-- PETA -->
+        <div data-tab-panel="peta">
+          <div class="grid g-side-3">
+            <section class="card">
+              <div class="card__head"><h2>Peta node &amp; gateway</h2><span class="spacer"></span>
+                <span class="small muted">Marker dipilih → detail perangkat</span></div>
+              <div class="card__body">
+                <div class="map" style="min-height:420px">
+                  <svg viewBox="0 0 760 400" role="img" aria-label="Peta skematik dengan pintu, node ukur, dan gateway">
+                    <path d="M30 90 C180 100 240 170 380 180 C520 190 600 150 730 190" stroke="#9fd3c8" stroke-width="18" fill="none" opacity=".5"/>
+                    <path d="M380 180 C398 240 370 320 360 380" stroke="#9fd3c8" stroke-width="10" fill="none" opacity=".45"/>
+                    <path d="M520 186 C560 240 590 290 620 370" stroke="#9fd3c8" stroke-width="8" fill="none" opacity=".4"/>
+                    <path d="M180 108 C170 170 150 210 140 270" stroke="#c7e3da" stroke-width="6" fill="none" opacity=".7"/>
+
+                    <g class="map__pin"><circle cx="380" cy="180" r="10" fill="#10443b" stroke="#fff" stroke-width="2.5"/>
+                      <text x="396" y="176" font-size="11" font-weight="600" fill="#172c30">GATE-01</text>
+                      <text x="396" y="189" font-size="10" fill="#64748b">AUTO · 34% · LIVE</text></g>
+                    <g class="map__pin"><circle cx="520" cy="186" r="10" fill="#b83a3a" stroke="#fff" stroke-width="2.5"/>
+                      <text x="536" y="182" font-size="11" font-weight="600" fill="#172c30">GATE-02</text>
+                      <text x="536" y="195" font-size="10" fill="#b83a3a">FAULT · overcurrent</text></g>
+                    <g class="map__pin"><circle cx="360" cy="330" r="9" fill="#e8a23b" stroke="#fff" stroke-width="2.5"/>
+                      <text x="376" y="334" font-size="10" fill="#172c30">GATE-03 · HOLD</text></g>
+                    <g class="map__pin"><circle cx="620" cy="352" r="9" fill="#64748b" stroke="#fff" stroke-width="2.5"/>
+                      <text x="470" y="376" font-size="10" fill="#172c30">GATE-04 · IDLE · stale 4 mnt</text></g>
+                    <g><circle cx="240" cy="140" r="6" fill="#2e6f9e" stroke="#fff" stroke-width="2"/>
+                      <text x="150" y="126" font-size="10" fill="#64748b">NODE-UKUR-02</text></g>
+                    <g><circle cx="560" cy="160" r="6" fill="#2e6f9e" stroke="#fff" stroke-width="2"/>
+                      <text x="574" y="150" font-size="10" fill="#64748b">NODE-UKUR-05</text></g>
+                    <g><circle cx="150" cy="250" r="6" fill="#d84c4c" stroke="#fff" stroke-width="2"/>
+                      <text x="60" y="268" font-size="10" fill="#b83a3a">NODE-UKUR-07 · offline</text></g>
+                    <rect x="640" y="70" width="86" height="34" rx="8" fill="#fff" stroke="#e2e8ec"/>
+                    <text x="654" y="84" font-size="9" fill="#64748b">GATEWAY-01</text>
+                    <text x="654" y="96" font-size="9" fill="#0a5c50">online · 12 node</text>
+                  </svg>
+                  <div class="map__legend">
+                    <span>● Pintu</span><span style="color:#2e6f9e">● Node ukur</span>
+                    <span style="color:#b83a3a">● Fault / offline</span>
+                    <span style="color:#64748b">◻ Gateway</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card__foot">Peta tidak memiliki kontrol aktuasi. Perangkat tanpa koordinat
+                ditampilkan pada daftar “belum dipetakan”.</div>
+            </section>
+
+            <div class="stack">
+              <section class="card">
+                <div class="card__head"><h2>GATE-02</h2><span class="spacer"></span><span class="badge badge--critical">FAULT</span></div>
+                <div class="card__body stack--sm">
+                  <dl class="kv">
+                    <dt>Lokasi</dt><dd>Tempek Kedua</dd>
+                    <dt>Mode terlapor</dt><dd>FAULT</dd>
+                    <dt>Bukaan</dt><dd>0,0 %</dd>
+                    <dt>Terakhir komunikasi</dt><dd>14:26 WITA</dd>
+                    <dt>Freshness</dt><dd><span class="badge badge--stale">STALE · 6 mnt</span></dd>
+                  </dl>
+                  <div class="banner banner--critical">
+                    <span>⛔</span>
+                    <div class="small"><strong>Arus motor 2,84 A</strong> melewati batas 2,5 A.
+                      Aktuator dihentikan oleh proteksi lokal. Periksa mekanis sebelum reset.</div>
+                  </div>
+                  <a class="btn btn--sm" href="05-gate-detail.html">Buka detail pintu</a>
+                </div>
+              </section>
+
+              <section class="card card--soft">
+                <div class="card__head"><h3>Kualitas data</h3></div>
+                <div class="card__body stack--sm">
+                  <div class="between small"><span>Level hulu</span><span class="badge badge--ok">OK</span></div>
+                  <div class="between small"><span>Level hilir</span><span class="badge badge--stale">SUSPECT</span></div>
+                  <div class="between small"><span>Encoder</span><span class="badge badge--critical">MISMATCH</span></div>
+                  <div class="between small"><span>Flow</span><span class="badge badge--offline">MISSING</span></div>
+                  <p class="small muted mt-4">Quality flag berasal dari payload perangkat dan
+                    evaluasi server; tidak diedit manual.</p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- WATER LEVEL -->
+        <div data-tab-panel="level" hidden>
+          <div class="grid g-2">
+            <section class="card">
+              <div class="card__head"><h2>Ketinggian hulu</h2><span class="spacer"></span><span class="sensor-value">0,82 <small>m</small></span></div>
+              <div class="card__body">
+                <div class="legend mb-2"><span><i style="background:#0f7a6b"></i>Terukur</span><span><span class="dash"></span>Batas normal 1,20 m</span></div>
+                <div data-chart='{"height":200,"labels":["00","03","06","09","12","15","18","21"],"threshold":{"value":1.2,"label":"1,20 m"},"series":[{"name":"Hulu","color":"#0f7a6b","values":[0.71,0.68,0.66,0.7,0.78,0.82,0.79,0.74],"fill":true}]}'></div>
+              </div>
+              <div class="card__foot">Sumber: NODE-UKUR-02 · quality OK · 14:30 WITA</div>
+            </section>
+            <section class="card">
+              <div class="card__head"><h2>Ketinggian hilir</h2><span class="spacer"></span>
+                <span class="sensor-value is-stale">0,61 <small>m</small></span></div>
+              <div class="card__body">
+                <div class="legend mb-2"><span><i style="background:#2e6f9e"></i>Terukur</span><span><span class="dash"></span>Batas minimum 0,35 m</span></div>
+                <div data-chart='{"height":200,"labels":["00","03","06","09","12","15","18","21"],"threshold":{"value":0.35,"label":"0,35 m"},"series":[{"name":"Hilir","color":"#2e6f9e","values":[0.55,0.54,0.52,0.56,0.6,0.61,null,0.6],"fill":true}],"gapNote":true}'></div>
+              </div>
+              <div class="card__foot">Ada satu segmen tanpa data (13:30–14:00) — ditandai, bukan diinterpolasi.</div>
+            </section>
+          </div>
+
+          <section class="card mt-4">
+            <div class="card__head"><h2>Pembacaan terakhir</h2><span class="spacer"></span>
+              <span class="small muted">timestamp selalu ditampilkan</span></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Waktu</th><th>Node</th><th class="right">Hulu (m)</th><th class="right">Hilir (m)</th><th>Quality</th><th>Seq</th></tr></thead>
+                  <tbody>
+                    <tr><td data-label="Waktu">14:30 WITA</td><td data-label="Node">NODE-UKUR-02</td><td data-label="Hulu" class="right num">0,82</td><td data-label="Hilir" class="right num">0,61</td><td data-label="Quality"><span class="badge badge--ok">OK</span></td><td data-label="Seq" class="mono">3812</td></tr>
+                    <tr><td data-label="Waktu">14:00 WITA</td><td data-label="Node">NODE-UKUR-02</td><td data-label="Hulu" class="right num">0,81</td><td data-label="Hilir" class="right num">0,60</td><td data-label="Quality"><span class="badge badge--ok">OK</span></td><td data-label="Seq" class="mono">3811</td></tr>
+                    <tr><td data-label="Waktu">13:30 WITA</td><td data-label="Node">NODE-UKUR-02</td><td data-label="Hulu" class="right num">—</td><td data-label="Hilir" class="right num">0,60</td><td data-label="Quality"><span class="badge badge--stale">MISSING</span></td><td data-label="Seq" class="mono">3810</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- FLOW -->
+        <div data-tab-panel="flow" hidden>
+          <div class="grid g-4">
+            <section class="card kpi"><span class="kpi__label">Debit saat ini</span><span class="kpi__value">37,6<small>L/d</small></span><span class="kpi__meta"><span class="badge badge--live">LIVE</span> 14:30 WITA</span></section>
+            <section class="card kpi"><span class="kpi__label">Target rule aktif</span><span class="kpi__value">39,0<small>L/d</small></span><span class="kpi__meta">SUBAK-AIR-021 v3</span></section>
+            <section class="card kpi"><span class="kpi__label">Deviasi</span><span class="kpi__value">−3,6<small>%</small></span><span class="kpi__meta">dalam toleransi ±10%</span></section>
+            <section class="card kpi"><span class="kpi__label">Volume hari ini</span><span class="kpi__value">1.240<small>m³</small></span><span class="kpi__meta">measurement: MEASURED</span></section>
+          </div>
+          <section class="card mt-4">
+            <div class="card__head"><h2>Debit terukur vs target</h2><span class="spacer"></span><span class="badge badge--info">24 jam</span></div>
+            <div class="card__body">
+              <div class="legend mb-2"><span><i style="background:#0f7a6b"></i>Aktual</span><span><i style="background:#e8a23b"></i>Target</span><span><span class="dash"></span>Toleransi bawah 35,1 L/d</span></div>
+              <div data-chart='{"height":240,"decimals":0,"labels":["00","03","06","09","12","15","18","21"],"threshold":{"value":35.1,"label":"toleransi 35,1"},"series":[{"name":"Aktual","color":"#0f7a6b","values":[31,29,28,32,36,37.6,35,33],"fill":true},{"name":"Target","color":"#e8a23b","values":[39,39,39,39,39,39,39,39],"dashed":true}]}'></div>
+            </div>
+            <div class="card__foot">Bila sensor debit tidak terpasang, nilai ditampilkan sebagai
+              <strong>ESTIMATED</strong> atau “—”, bukan angka pasti.</div>
+          </section>
+        </div>
+
+        <!-- DEVICES -->
+        <div data-tab-panel="devices" hidden>
+          <section class="card">
+            <div class="card__head"><h2>Kesehatan perangkat</h2><span class="spacer"></span>
+              <span class="badge badge--warning">1 offline</span><span class="badge badge--stale">1 stale</span></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table table--cards table--flush">
+                  <thead><tr><th>Perangkat</th><th>Status</th><th class="right">Baterai</th><th class="right">RSSI</th><th class="right">SNR</th><th>Firmware</th><th>Komunikasi</th></tr></thead>
+                  <tbody>
+                    <tr><td data-label="Perangkat"><strong>subako-gate-01</strong><br><span class="small muted">GATE_NODE</span></td><td data-label="Status"><span class="badge badge--live">LIVE</span></td><td data-label="Baterai" class="right num">87%</td><td data-label="RSSI" class="right num">−71 dBm</td><td data-label="SNR" class="right num">8,5 dB</td><td data-label="Firmware">0.9.3</td><td data-label="Komunikasi">44 s lalu</td></tr>
+                    <tr><td data-label="Perangkat"><strong>subako-gate-02</strong><br><span class="small muted">GATE_NODE</span></td><td data-label="Status"><span class="badge badge--stale">STALE</span></td><td data-label="Baterai" class="right num">64%</td><td data-label="RSSI" class="right num">−88 dBm</td><td data-label="SNR" class="right num">2,1 dB</td><td data-label="Firmware">0.9.3</td><td data-label="Komunikasi">6 mnt lalu</td></tr>
+                    <tr><td data-label="Perangkat"><strong>subako-node-07</strong><br><span class="small muted">MEASURE_NODE</span></td><td data-label="Status"><span class="badge badge--offline">OFFLINE</span></td><td data-label="Baterai" class="right num">42%</td><td data-label="RSSI" class="right num">—</td><td data-label="SNR" class="right num">—</td><td data-label="Firmware">0.9.2</td><td data-label="Komunikasi">18 mnt lalu</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">
+              <span data-roles="ADMIN"><a href="10-admin.html">Kelola perangkat &amp; provisioning →</a></span>
+              <span data-roles="VIEWER OPERATOR PEKASEH" class="muted">Konfigurasi perangkat hanya untuk administrator teknis.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

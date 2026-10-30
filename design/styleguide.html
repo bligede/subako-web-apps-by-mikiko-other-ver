@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Styleguide</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="styleguide" data-title="Design System">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Styleguide · design token &amp; komponen</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1>Design System</h1>
+          <p class="lede">Token, tipografi, dan komponen dasar. Implementasi React wajib memakai
+            variabel yang sama; jangan menambah warna atau ukuran di luar daftar ini.</p>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card__head"><h2>Warna brand</h2><span class="spacer"></span><span class="badge badge--info">kontras diuji</span></div>
+        <div class="card__body">
+          <div class="swatches">
+            <div class="swatch"><div class="swatch__color" style="background:#10443B"></div><div class="swatch__meta"><b>Forest 800</b>#10443B<br>primary brand · 10,9:1 dgn putih</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#159D8A"></div><div class="swatch__meta"><b>Teal 600</b>#159D8A<br>aksen grafik · 3,4:1 (non-teks)</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#0F7A6B"></div><div class="swatch__meta"><b>Teal 700</b>#0F7A6B<br>fill tombol · 5,2:1</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#E9F3EC"></div><div class="swatch__meta"><b>Soft Green</b>#E9F3EC<br>latar section</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#172C30"></div><div class="swatch__meta"><b>Dark Text</b>#172C30<br>14,6:1 di atas putih</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#64748B"></div><div class="swatch__meta"><b>Neutral</b>#64748B<br>teks sekunder · 4,76:1</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#E8A23B"></div><div class="swatch__meta"><b>Warning</b>#E8A23B<br>fill; teks pakai #8A5A12</div></div>
+            <div class="swatch"><div class="swatch__color" style="background:#D84C4C"></div><div class="swatch__meta"><b>Critical</b>#D84C4C<br>indikator; fill pakai #B83A3A</div></div>
+          </div>
+          <div class="banner banner--info mt-4">
+            <span>ℹ️</span>
+            <div><strong>Catatan keputusan K-09.</strong> Tombol utama memakai Teal 700 (#0F7A6B),
+              bukan Teal 600 (#159D8A), karena teks putih di atas Teal 600 hanya mencapai
+              3,4:1 dan gagal WCAG AA. Perlu persetujuan PO.</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid g-2 mt-4">
+        <section class="card">
+          <div class="card__head"><h2>Tipografi</h2></div>
+          <div class="card__body">
+            <div class="spec-list">
+              <div class="spec"><span>display 40/44</span><span style="font-size:40px;line-height:44px;font-weight:700" class="num">37,6</span></div>
+              <div class="spec"><span>h1 28/34</span><span style="font-size:28px;line-height:34px;font-weight:700">Ringkasan irigasi</span></div>
+              <div class="spec"><span>h2 20/28</span><span style="font-size:20px;line-height:28px;font-weight:600">Ketinggian air</span></div>
+              <div class="spec"><span>h3 16/24</span><span style="font-size:16px;line-height:24px;font-weight:600">Gate GATE-01</span></div>
+              <div class="spec"><span>body 14/22</span><span>Teks umum dengan angka 1.240 m³ dan satuan L/detik.</span></div>
+              <div class="spec"><span>meta 12/18</span><span class="small muted">14:32 WITA · 30 Okt 2026</span></div>
+              <div class="spec"><span>micro 11/16</span><span class="micro">STATUS PERANGKAT</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card__head"><h2>Tombol</h2></div>
+          <div class="card__body stack">
+            <div class="row row--wrap">
+              <button class="btn btn--primary">Kirim perintah</button>
+              <button class="btn">Batal</button>
+              <button class="btn btn--ghost">Lihat detail</button>
+              <button class="btn btn--danger">Hentikan</button>
+              <button class="btn btn--sm">Unduh CSV</button>
+            </div>
+            <div class="row row--wrap">
+              <button class="btn" disabled>Buka pintu</button>
+              <span class="small muted">Disabled selalu disertai alasan di dekatnya, bukan tooltip saja.</span>
+            </div>
+            <div class="field">
+              <label class="label" for="sg-input">Target bukaan</label>
+              <div class="input-group">
+                <input class="input" id="sg-input" value="40" inputmode="decimal">
+                <span class="btn" style="pointer-events:none">%</span>
+              </div>
+              <span class="hint">Rentang 0–100. Perubahan 1% = satu langkah encoder.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card mt-4">
+        <div class="card__head"><h2>Status &amp; badge</h2><span class="spacer"></span><span class="small muted">warna tidak pernah berdiri sendiri</span></div>
+        <div class="card__body">
+          <div class="row row--wrap">
+            <span class="badge badge--live"><i class="dot-live"></i> LIVE</span>
+            <span class="badge badge--stale">STALE · 4 mnt</span>
+            <span class="badge badge--offline">OFFLINE</span>
+            <span class="badge badge--demo">DEMO</span>
+            <span class="badge badge--ok">AUTO</span>
+            <span class="badge badge--warning">HOLD</span>
+            <span class="badge badge--critical">FAULT</span>
+            <span class="badge badge--info">MANUAL</span>
+            <span class="badge badge--draft">DRAFT</span>
+            <span class="badge badge--review">IN REVIEW</span>
+            <span class="badge badge--approved">APPROVED</span>
+            <span class="badge badge--published">PUBLISHED</span>
+            <span class="badge badge--superseded">SUPERSEDED</span>
+          </div>
+          <hr class="divider">
+          <div class="grid g-3">
+            <div class="card card--soft">
+              <div class="kpi">
+                <span class="kpi__label">Debit terukur</span>
+                <span class="kpi__value">37,6 <small>L/detik</small></span>
+                <span class="kpi__meta">▲ +2,1 vs 1 jam lalu <span class="badge badge--live">LIVE</span></span>
+                <div class="kpi__spark" data-spark="30,32,31,34,33,36,35,37,36,37.6" data-color="#159d8a"></div>
+              </div>
+            </div>
+            <div class="card kpi is-stale">
+              <span class="kpi__label">Ketinggian hulu</span>
+              <span class="kpi__value">0,82 <small>m</small></span>
+              <span class="kpi__meta"><span class="badge badge--stale">STALE · 4 mnt</span></span>
+              <div class="kpi__spark" data-spark="0.7,0.72,0.78,0.8,0.82,0.82,0.82" data-color="#64748b"></div>
+            </div>
+            <div class="card kpi">
+              <span class="kpi__label">Baterai terendah</span>
+              <span class="kpi__value">—</span>
+              <span class="kpi__meta">Belum ada data untuk periode ini</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid g-2 mt-4">
+        <section class="card">
+          <div class="card__head"><h2>Banner &amp; state</h2></div>
+          <div class="card__body stack">
+            <div class="banner banner--demo"><span>⚠️</span><div><strong>DATA SIMULASI.</strong> Site ini berjalan pada mode SIMULATION.</div></div>
+            <div class="banner banner--offline"><span>⇄</span><div><strong>Offline.</strong> Menampilkan data terakhir 12:04 WITA.</div></div>
+            <div class="banner banner--critical"><span>⛔</span><div><strong>Ledger tidak valid.</strong> Entri 87 gagal verifikasi rantai hash. Hubungi administrator.</div></div>
+            <div class="empty">
+              <strong>Belum ada pembacaan</strong>
+              <span class="small">Perangkat baru akan muncul setelah uplink pertama diterima.</span>
+              <button class="btn btn--sm mt-4">Periksa provisioning</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card__head"><h2>Tabel → kartu (mobile)</h2></div>
+          <div class="card__body card__body--flush">
+            <div class="table-wrap">
+              <table class="table table--cards">
+                <thead><tr><th>Pintu</th><th>Mode</th><th class="right">Bukaan</th><th>Freshness</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Pintu"><strong>GATE-01</strong><br><span class="small muted">Bangunan Bagi Utama</span></td>
+                    <td data-label="Mode"><span class="badge badge--ok">AUTO</span></td>
+                    <td data-label="Bukaan" class="right num">34,0%</td>
+                    <td data-label="Freshness"><span class="badge badge--live">LIVE</span></td>
+                  </tr>
+                  <tr>
+                    <td data-label="Pintu"><strong>GATE-02</strong><br><span class="small muted">Tempek Kedua</span></td>
+                    <td data-label="Mode"><span class="badge badge--critical">FAULT</span></td>
+                    <td data-label="Bukaan" class="right num">0,0%</td>
+                    <td data-label="Freshness"><span class="badge badge--stale">STALE · 6 mnt</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card__foot">Pada lebar &lt; 768 px, `thead` disembunyikan dan setiap sel memakai `data-label`.</div>
+        </section>
+      </div>
+
+      <section class="card mt-4">
+        <div class="card__head"><h2>Aturan aksesibilitas</h2></div>
+        <div class="card__body">
+          <div class="grid g-2">
+            <div class="stack--sm">
+              <p class="small"><strong>Fokus:</strong> outline 2 px teal, offset 2 px, selalu terlihat.</p>
+              <p class="small"><strong>Target sentuh:</strong> minimum 44×44 px pada mobile.</p>
+              <p class="small"><strong>Grafik:</strong> setiap grafik punya ringkasan teks + toggle tabel.</p>
+            </div>
+            <div class="stack--sm">
+              <p class="small"><strong>Angka:</strong> `tabular-nums`, desimal koma, satuan selalu tampil.</p>
+              <p class="small"><strong>Warna:</strong> status selalu disertai ikon + teks.</p>
+              <p class="small"><strong>Gerak:</strong> dihormati `prefers-reduced-motion`.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

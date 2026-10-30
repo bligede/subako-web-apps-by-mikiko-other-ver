@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Masuk</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Login · tidak ada autentikasi nyata</span>
+  <span class="spacer"></span>
+  <a href="index.html">Indeks</a>
+  <a href="styleguide.html">Styleguide</a>
+</div>
+
+<div class="auth">
+  <section class="auth__panel">
+    <div class="auth__card">
+      <div class="row" style="gap:10px">
+        <span class="brand__mark" style="width:38px;height:38px;border-radius:10px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20V9l6-4 6 4v11"/><path d="M9 20v-5h3v5"/><path d="M4 9h13"/>
+          </svg>
+        </span>
+        <div>
+          <div style="font-weight:700;letter-spacing:.14em;color:#10443b">SUBAKO</div>
+          <div class="small muted">Smart Irrigation Management Platform</div>
+        </div>
+      </div>
+
+      <div>
+        <h1 style="font-size:24px;line-height:30px">Masuk ke akun Anda</h1>
+        <p class="small muted mt-4">Gunakan akun yang diberikan Pekaseh atau administrator teknis.</p>
+      </div>
+
+      <div class="banner banner--info" role="note">
+        <span>ℹ️</span>
+        <div class="small"><strong>Akun demo:</strong> pekaseh@demo · operator@demo · petani@demo.
+          Password demo hanya berlaku di lingkungan pengembangan.</div>
+      </div>
+
+      <form class="stack" onsubmit="return false">
+        <div class="field">
+          <label class="label" for="email">Email</label>
+          <input class="input" id="email" type="email" value="pekaseh@demo" autocomplete="username">
+        </div>
+        <div class="field">
+          <label class="label" for="password">Password</label>
+          <input class="input" id="password" type="password" value="••••••••••" autocomplete="current-password">
+          <span class="hint">Lupa password? Hubungi Pekaseh site Anda.</span>
+        </div>
+        <div class="between">
+          <label class="check"><input type="checkbox" checked> Ingat perangkat ini</label>
+          <a class="small" href="#">Bantuan</a>
+        </div>
+        <button class="btn btn--primary btn--block" type="submit">Masuk</button>
+      </form>
+
+      <div class="banner banner--critical" role="alert" hidden>
+        <span>⛔</span>
+        <div class="small">Email atau password salah. Sisa 4 percobaan sebelum akun dikunci sementara.</div>
+      </div>
+
+      <hr class="divider">
+      <p class="small muted">
+        Dengan masuk, Anda menyetujui pencatatan aktivitas operasional pada audit dan
+        Buku Catatan Air. Data simulasi diberi label DEMO.
+      </p>
+      <p class="small muted">SUBAKO v0.1 · by Mikiko Technology</p>
+    </div>
+  </section>
+
+  <aside class="auth__hero">
+    <div class="row" style="gap:10px">
+      <span class="badge" style="background:rgba(255,255,255,.12);color:#eaf5f2;border-color:rgba(255,255,255,.22)">v0.1 · PILOT</span>
+      <span class="badge badge--demo">DATA SIMULASI</span>
+    </div>
+
+    <div class="stack" style="max-width:44ch">
+      <h2>Tradisi yang memutuskan. Teknologi yang mengukur.</h2>
+      <p style="font-size:14px;line-height:22px;color:#a8cbc3">
+        SUBAKO tidak menggantikan Paruman atau Pekaseh. Sistem ini mencatat kondisi air,
+        menjalankan aturan yang telah disahkan, dan membuka catatan distribusi agar dapat
+        diperiksa bersama.
+      </p>
+      <div class="auth__quote">
+        “Pintu air tetap dapat dioperasikan secara mekanis ketika sistem elektronik
+        mengalami kegagalan.”
+      </div>
+    </div>
+
+    <div class="grid g-3" style="gap:12px">
+      <div>
+        <div style="font-size:22px;font-weight:700;color:#fff" class="num">6</div>
+        <div class="small" style="color:#8fbdb3">pintu terpantau</div>
+      </div>
+      <div>
+        <div style="font-size:22px;font-weight:700;color:#fff" class="num">118</div>
+        <div class="small" style="color:#8fbdb3">entri ledger</div>
+      </div>
+      <div>
+        <div style="font-size:22px;font-weight:700;color:#fff" class="num">7</div>
+        <div class="small" style="color:#8fbdb3">seal harian valid</div>
+      </div>
+    </div>
+
+    <svg class="auth__rings" viewBox="0 0 400 400" fill="none" stroke="#159d8a" aria-hidden="true">
+      <circle cx="200" cy="200" r="60" stroke-width="2"/>
+      <circle cx="200" cy="200" r="110" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="160" stroke-width="1"/>
+      <circle cx="200" cy="200" r="200" stroke-width="0.8"/>
+    </svg>
+  </aside>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

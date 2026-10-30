@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Laporan</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="reports" data-title="Laporan">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Laporan · filter periode &amp; ekspor</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Laporan</h1>
+          <p class="lede">Ringkasan distribusi, kinerja pintu, dan penyimpangan terhadap aturan.
+            Semua periode mengikuti batas hari WITA.</p>
+        </div>
+        <span class="spacer"></span>
+        <span class="badge badge--demo">DEMO</span>
+      </div>
+
+      <section class="card">
+        <div class="card__body">
+          <div class="grid g-4" style="align-items:end">
+            <div class="field">
+              <label class="label" for="rtype">Jenis laporan</label>
+              <select class="select" id="rtype">
+                <option>Distribusi harian</option>
+                <option>Distribusi mingguan</option>
+                <option>Distribusi bulanan</option>
+                <option>Kinerja pintu</option>
+                <option>Kinerja perangkat</option>
+                <option>Konsumsi energi</option>
+                <option>Histori gangguan</option>
+                <option>Penyimpangan terhadap aturan</option>
+                <option>Rekap aktivitas operator</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="period">Periode</label>
+              <select class="select" id="period">
+                <option>30 Oktober 2026</option>
+                <option>Minggu ke-44 (27 Okt–2 Nov)</option>
+                <option>Oktober 2026</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="rsite">Site</label>
+              <select class="select" id="rsite"><option>Subak Sari · Tabanan</option><option>Subak Kedampal · Jembrana</option></select>
+            </div>
+            <div class="row">
+              <button class="btn btn--primary" style="flex:1">Terapkan</button>
+              <span data-roles="OPERATOR PEKASEH ADMIN"><button class="btn" title="Ekspor PDF">PDF</button>
+                <button class="btn" title="Ekspor Excel">XLSX</button></span>
+            </div>
+          </div>
+        </div>
+        <div class="card__foot">
+          <span data-roles="VIEWER">Ekspor tersedia untuk operator dan Pekaseh.</span>
+          <span data-roles="OPERATOR PEKASEH ADMIN">Ekspor dijalankan sebagai job; tautan unduhan berlaku 15 menit.</span>
+        </div>
+      </section>
+
+      <div class="grid g-4 mt-4">
+        <section class="card kpi"><span class="kpi__label">Volume terdistribusi</span><span class="kpi__value">1.240<small>m³</small></span><span class="kpi__meta">92% MEASURED</span></section>
+        <section class="card kpi"><span class="kpi__label">Deviasi rata-rata</span><span class="kpi__value">−3,6<small>%</small></span><span class="kpi__meta">toleransi rule ±10%</span></section>
+        <section class="card kpi"><span class="kpi__label">Kepatuhan jadwal</span><span class="kpi__value">96<small>%</small></span><span class="kpi__meta">2 dari 8 slot</span></section>
+        <section class="card kpi kpi--warning"><span class="kpi__label">Gangguan</span><span class="kpi__value">4</span><span class="kpi__meta">1 kritis · 3 sedang</span></section>
+      </div>
+
+      <div class="grid g-side mt-4">
+        <section class="card">
+          <div class="card__head"><h2>Distribusi per jam</h2><span class="spacer"></span>
+            <span class="small muted">m³ · 30 Okt 2026</span></div>
+          <div class="card__body">
+            <div class="legend mb-2"><span><i style="background:#159d8a"></i>Volume terukur</span>
+              <span><i style="background:#e8a23b"></i>Volume estimasi</span></div>
+            <div data-chart='{"height":220,"decimals":0,"labels":["06","08","10","12","14","16","18"],"series":[{"name":"Terukur","color":"#159d8a","values":[120,148,162,158,152,118,74],"fill":true},{"name":"Estimasi","color":"#e8a23b","values":[0,0,14,18,12,0,0],"dashed":true}]}'></div>
+          </div>
+          <div class="card__foot">Angka estimasi selalu ditandai dan tidak dijumlahkan sebagai terukur.</div>
+        </section>
+
+        <section class="card">
+          <div class="card__head"><h2>Status ekspor</h2></div>
+          <div class="card__body stack--sm">
+            <div class="between small"><span>daily-2026-10-30.pdf</span><span class="badge badge--ok">DONE</span></div>
+            <div class="between small"><span>gate-performance.xlsx</span><span class="badge badge--review">RUNNING</span></div>
+            <div class="between small"><span>deviation-okt.pdf</span><span class="badge badge--offline">QUEUED</span></div>
+            <hr class="divider">
+            <p class="small muted">Job berjalan di worker; UI tidak menahan halaman dan tidak
+              mengulang permintaan otomatis.</p>
+            <button class="btn btn--sm btn--block">Unduh yang selesai</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="card mt-4">
+        <div class="card__head"><h2>Kinerja pintu</h2><span class="spacer"></span>
+          <span class="small muted">30 Okt 2026 · 6 pintu</span></div>
+        <div class="card__body card__body--flush">
+          <div class="table-wrap">
+            <table class="table table--cards table--flush">
+              <thead><tr><th>Pintu</th><th class="right">Jam operasi</th><th class="right">Volume</th><th class="right">Deviasi</th><th class="right">Command</th><th class="right">Ditolak</th><th>Ketersediaan</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Pintu"><strong>GATE-01</strong></td><td data-label="Jam operasi" class="right num">9,5</td><td data-label="Volume" class="right num">412,6 m³</td><td data-label="Deviasi" class="right num">−1,8%</td><td data-label="Command" class="right num">3</td><td data-label="Ditolak" class="right num">0</td><td data-label="Ketersediaan">99,4%</td></tr>
+                <tr><td data-label="Pintu"><strong>GATE-02</strong></td><td data-label="Jam operasi" class="right num">3,1</td><td data-label="Volume" class="right num">168,0 m³</td><td data-label="Deviasi" class="right num">−6,2%</td><td data-label="Command" class="right num">5</td><td data-label="Ditolak" class="right num">2</td><td data-label="Ketersediaan">87,1%</td></tr>
+                <tr><td data-label="Pintu"><strong>GATE-03</strong></td><td data-label="Jam operasi" class="right num">7,8</td><td data-label="Volume" class="right num">301,4 m³</td><td data-label="Deviasi" class="right num">−2,4%</td><td data-label="Command" class="right num">1</td><td data-label="Ditolak" class="right num">0</td><td data-label="Ketersediaan">96,8%</td></tr>
+                <tr><td data-label="Pintu"><strong>GATE-04</strong></td><td data-label="Jam operasi" class="right num">4,4</td><td data-label="Volume" class="right num">174,2 m³</td><td data-label="Deviasi" class="right num">—</td><td data-label="Command" class="right num">0</td><td data-label="Ditolak" class="right num">0</td><td data-label="Ketersediaan">71,2%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card__foot">Ketersediaan dihitung dari device_health, bukan dari asumsi jadwal.</div>
+      </section>
+
+      <section class="card mt-4">
+        <div class="card__head"><h2>Penyimpangan terhadap aturan</h2><span class="spacer"></span>
+          <span class="badge badge--warning">2 slot di luar toleransi</span></div>
+        <div class="card__body card__body--flush">
+          <div class="table-wrap">
+            <table class="table table--cards table--flush">
+              <thead><tr><th>Slot</th><th>Tempek</th><th class="right">Target</th><th class="right">Aktual</th><th class="right">Deviasi</th><th>Toleransi</th><th>Catatan</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Slot">10:00–14:00</td><td data-label="Tempek">Tempek Kedua</td><td data-label="Target" class="right num">34,1 L/d</td><td data-label="Aktual" class="right num">32,0 L/d</td><td data-label="Deviasi" class="right num">−6,2%</td><td data-label="Toleransi">±10%</td><td data-label="Catatan">Dalam toleransi</td></tr>
+                <tr><td data-label="Slot">12:00–12:30</td><td data-label="Tempek">Subak Sari</td><td data-label="Target" class="right num">39,0 L/d</td><td data-label="Aktual" class="right num">31,4 L/d</td><td data-label="Deviasi" class="right num">−19,5%</td><td data-label="Toleransi">±10%</td><td data-label="Catatan"><span class="badge badge--warning">Overcurrent</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card__foot">Laporan menampilkan penyebab yang tercatat (alert/command) di samping angka.</div>
+      </section>
+
+      <div class="banner banner--info mt-4">
+        <span>ℹ️</span>
+        <div><strong>Disclaimer data.</strong> Site ini berjalan pada mode SIMULATION. Laporan
+          tidak menggambarkan distribusi air nyata dan tidak dapat dilampirkan sebagai bukti
+          pelaksanaan Paruman.</div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

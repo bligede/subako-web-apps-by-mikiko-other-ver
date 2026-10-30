@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Buku Catatan Air</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="ledger" data-title="Buku Catatan Air">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Water Ledger · append-only + hash chain (bukan blockchain)</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Buku Catatan Air</h1>
+          <p class="lede">Catatan distribusi dan aktivitas pintu yang tidak dapat diubah diam-diam.
+            Koreksi dilakukan dengan entri kompensasi, bukan dengan mengedit entri lama.</p>
+        </div>
+        <span class="spacer"></span>
+        <span class="badge badge--demo">DEMO</span>
+        <div class="row">
+          <button class="btn btn--sm" data-roles="OPERATOR PEKASEH ADMIN">Ekspor CSV</button>
+          <button class="btn btn--sm btn--primary" data-roles="OPERATOR PEKASEH ADMIN">Ekspor PDF</button>
+        </div>
+      </div>
+
+      <div class="grid g-4">
+        <section class="card kpi"><span class="kpi__label">Total entri</span><span class="kpi__value">118</span><span class="kpi__meta">23–30 Okt 2026</span></section>
+        <section class="card kpi"><span class="kpi__label">Volume tercatat</span><span class="kpi__value">8.942<small>m³</small></span><span class="kpi__meta">92% MEASURED · 8% ESTIMATED</span></section>
+        <section class="card kpi"><span class="kpi__label">Seal harian</span><span class="kpi__value">7<small>/7</small></span><span class="kpi__meta">semua cocok</span></section>
+        <section class="card kpi"><span class="kpi__label">Integritas rantai</span><span class="kpi__value" style="font-size:24px;line-height:32px"><span class="badge badge--ok">VALID</span></span><span class="kpi__meta">diverifikasi 14:30 WITA</span></section>
+      </div>
+
+      <div class="grid g-side-3 mt-4">
+        <section class="card">
+          <div class="card__head"><h2>Entri</h2><span class="spacer"></span>
+            <span class="small muted">append-only · tanpa tombol hapus</span></div>
+          <div class="card__body card__body--flush">
+            <div class="table-wrap">
+              <table class="table table--cards table--flush">
+                <thead><tr><th>Seq</th><th>Waktu</th><th>Jenis</th><th>Pintu / Tempek</th><th class="right">Volume</th><th>Posisi</th><th>Pengukuran</th><th>Hash</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Seq" class="mono">118</td>
+                    <td data-label="Waktu">14:20 WITA</td>
+                    <td data-label="Jenis"><span class="badge badge--published">DISTRIBUSI</span></td>
+                    <td data-label="Pintu">GATE-01 · Tempek Sari</td>
+                    <td data-label="Volume" class="right num">112,4 m³</td>
+                    <td data-label="Posisi">34% → 34%</td>
+                    <td data-label="Pengukuran"><span class="badge badge--ok">MEASURED</span></td>
+                    <td data-label="Hash"><button class="hash" data-copy="9f2c8b1e4ab1c0d9e7f2a6b3c8d1e0f4" title="Salin hash">9f2c8b1e</button></td>
+                  </tr>
+                  <tr>
+                    <td data-label="Seq" class="mono">117</td>
+                    <td data-label="Waktu">14:12 WITA</td>
+                    <td data-label="Jenis"><span class="badge badge--warning">AKTIVITAS PINTU</span></td>
+                    <td data-label="Pintu">GATE-02 · —</td>
+                    <td data-label="Volume" class="right num">—</td>
+                    <td data-label="Posisi">0% → 0%</td>
+                    <td data-label="Pengukuran"><span class="badge badge--offline">MISSING</span></td>
+                    <td data-label="Hash"><button class="hash" data-copy="7a41c0d93b8e2f6a1c4d9e0b5f7a2c31" title="Salin hash">7a41c0d9</button></td>
+                  </tr>
+                  <tr>
+                    <td data-label="Seq" class="mono">116</td>
+                    <td data-label="Waktu">13:55 WITA</td>
+                    <td data-label="Jenis"><span class="badge badge--published">DISTRIBUSI</span></td>
+                    <td data-label="Pintu">GATE-03 · Tempek Kedua</td>
+                    <td data-label="Volume" class="right num">86,1 m³</td>
+                    <td data-label="Posisi">22,5% → 22,5%</td>
+                    <td data-label="Pengukuran"><span class="badge badge--ok">MEASURED</span></td>
+                    <td data-label="Hash"><button class="hash" data-copy="5c8e3aa2d1f0b7c94e6a8d2f3b1c0e75" title="Salin hash">5c8e3aa2</button></td>
+                  </tr>
+                  <tr>
+                    <td data-label="Seq" class="mono">115</td>
+                    <td data-label="Waktu">13:40 WITA</td>
+                    <td data-label="Jenis"><span class="badge badge--info">CATATAN SISTEM</span></td>
+                    <td data-label="Pintu">SIM-NODE-11</td>
+                    <td data-label="Volume" class="right num">—</td>
+                    <td data-label="Posisi">—</td>
+                    <td data-label="Pengukuran">—</td>
+                    <td data-label="Hash"><button class="hash" data-copy="2b7d90f4c6e1a8d3f5b0c9e7a2d4f681" title="Salin hash">2b7d90f4</button></td>
+                  </tr>
+                  <tr>
+                    <td data-label="Seq" class="mono">114</td>
+                    <td data-label="Waktu">12:15 WITA</td>
+                    <td data-label="Jenis"><span class="badge badge--critical">KOMPENSASI</span></td>
+                    <td data-label="Pintu">GATE-01 · Tempek Sari</td>
+                    <td data-label="Volume" class="right num">−4,2 m³</td>
+                    <td data-label="Posisi">—</td>
+                    <td data-label="Pengukuran"><span class="badge badge--warning">ESTIMATED</span></td>
+                    <td data-label="Hash"><button class="hash" data-copy="d41f7b2a9c6e0d5f8a3b1e7c2d9f0a46" title="Salin hash">d41f7b2a</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card__foot">
+            <span>Menampilkan 5 dari 118 entri.</span>
+            <span class="spacer" style="flex:1"></span>
+            <button class="btn btn--sm">Muat lebih banyak</button>
+          </div>
+        </section>
+
+        <div class="stack">
+          <section class="card">
+            <div class="card__head"><h2>Verifikasi integritas</h2></div>
+            <div class="card__body stack--sm">
+              <div class="banner banner--info">
+                <span>✓</span>
+                <div class="small"><strong>Rantai utuh.</strong> 118 entri diperiksa,
+                  7 seal harian cocok. Hash terakhir <span class="mono">9f2c8b1e…</span></div>
+              </div>
+              <dl class="kv">
+                <dt>Rentang</dt><dd>23–30 Okt</dd>
+                <dt>Entri diperiksa</dt><dd>118</dd>
+                <dt>Seal cocok</dt><dd>7 / 7</dd>
+                <dt>Diverifikasi</dt><dd>14:30 WITA</dd>
+                <dt>Oleh</dt><dd>Pekaseh Wayan</dd>
+              </dl>
+              <button class="btn btn--sm btn--block mt-4">Verifikasi ulang</button>
+              <p class="hint">Verifikasi menghitung ulang SHA-256 dari setiap entri dan
+                membandingkannya dengan seal harian.</p>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card__head"><h3>Seal harian</h3></div>
+            <div class="card__body card__body--flush">
+              <div class="table-wrap">
+                <table class="table">
+                  <thead><tr><th>Tanggal</th><th class="right">Entri</th><th>Seal</th></tr></thead>
+                  <tbody>
+                    <tr><td>29 Okt</td><td class="right num">17</td><td><span class="hash">a71c…</span></td></tr>
+                    <tr><td>28 Okt</td><td class="right num">19</td><td><span class="hash">f30b…</span></td></tr>
+                    <tr><td>27 Okt</td><td class="right num">16</td><td><span class="hash">c92e…</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card__foot">Dibuat otomatis 00:05 WITA untuk hari sebelumnya.</div>
+          </section>
+
+          <section class="card" data-roles="PEKASEH">
+            <div class="card__head"><h3>Catat koreksi (kompensasi)</h3></div>
+            <div class="card__body stack--sm">
+              <div class="field">
+                <label class="label" for="orig">Entri asal</label>
+                <input class="input" id="orig" value="Seq 118 · 14:20 WITA" readonly>
+              </div>
+              <div class="field">
+                <label class="label" for="vol">Penyesuaian volume (m³)</label>
+                <input class="input" id="vol" value="-4.2" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label class="label" for="why">Alasan (min. 20 karakter)</label>
+                <textarea class="textarea" id="why">Pembacaan sensor meleset saat kalibrasi ulang; volume dikoreksi sesuai catatan lapangan.</textarea>
+              </div>
+              <button class="btn btn--sm btn--block">Simpan entri kompensasi</button>
+              <p class="hint">Entri asal tetap terlihat. Kedua entri ditautkan melalui
+                <span class="mono">original_entry_id</span>.</p>
+            </div>
+          </section>
+
+          <section class="card card--soft" data-roles="VIEWER OPERATOR ADMIN">
+            <div class="card__body">
+              <p class="small"><strong>Koreksi hanya oleh Pekaseh.</strong> Entri lama tidak pernah
+                diubah atau dihapus; koreksi tercatat sebagai entri baru yang menunjuk entri asal.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="note mt-6">
+        <b>Catatan desain &amp; teknis.</b> Ini <strong>bukan blockchain</strong>: tidak ada konsensus
+        terdistribusi. Yang ada adalah hash chain per site, seal harian (Merkle root), dan tabel
+        append-only dengan trigger database yang menolak UPDATE/DELETE.
+        <span data-roles="ADMIN">Administrator hanya dapat memverifikasi dan mengekspor; tidak ada
+          endpoint untuk mengubah entri.</span>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

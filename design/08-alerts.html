@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Peringatan</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="alerts" data-title="Peringatan">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Peringatan · evidence &amp; resolusi</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar></aside>
+  <div class="main">
+    <header class="topbar" data-topbar></header>
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Peringatan</h1>
+          <p class="lede">Gangguan perangkat dan penyimpangan distribusi. Setiap peringatan
+            membawa bukti, waktu, dan tindakan yang disarankan.</p>
+        </div>
+        <span class="spacer"></span>
+        <span class="badge badge--demo">DEMO</span>
+      </div>
+
+      <div class="grid g-4">
+        <section class="card kpi kpi--critical"><span class="kpi__label">Kritis terbuka</span><span class="kpi__value">1</span><span class="kpi__meta">motor overcurrent</span></section>
+        <section class="card kpi kpi--warning"><span class="kpi__label">Tinggi</span><span class="kpi__value">1</span><span class="kpi__meta">baterai rendah</span></section>
+        <section class="card kpi"><span class="kpi__label">Sedang</span><span class="kpi__value">1</span><span class="kpi__meta">data tidak segar</span></section>
+        <section class="card kpi"><span class="kpi__label">Selesai hari ini</span><span class="kpi__value">2</span><span class="kpi__meta">rata-rata 38 menit</span></section>
+      </div>
+
+      <div class="filter-bar mt-4">
+        <span class="chip is-active">Terbuka</span>
+        <span class="chip">Diakui</span><span class="chip">Selesai</span>
+        <span class="chip">Semua severity</span>
+        <span class="spacer" style="flex:1"></span>
+        <span class="small muted">Diperbarui otomatis via WebSocket</span>
+      </div>
+
+      <div class="grid g-side-3">
+        <div class="stack">
+          <section class="card">
+            <div class="card__head">
+              <span class="sev-bar sev-bar--critical" style="height:34px;width:4px"></span>
+              <div>
+                <h2>Motor overcurrent — GATE-02</h2>
+                <span class="small muted">CRITICAL · pertama 14:12 WITA · terakhir 14:26 WITA</span>
+              </div>
+              <span class="spacer"></span>
+              <span class="badge badge--critical">TERBUKA</span>
+            </div>
+            <div class="card__body stack">
+              <div class="grid g-3">
+                <dl class="kv"><dt>Site</dt><dd>Subak Sari</dd><dt>Pintu</dt><dd>GATE-02</dd><dt>Perangkat</dt><dd class="mono">subako-gate-02</dd></dl>
+                <dl class="kv"><dt>Arus terukur</dt><dd>2,84 A</dd><dt>Batas</dt><dd>2,50 A</dd><dt>Durasi</dt><dd>14 menit</dd></dl>
+                <dl class="kv"><dt>Mode terlapor</dt><dd>FAULT</dd><dt>Freshness</dt><dd><span class="badge badge--stale">STALE</span></dd><dt>Pemilik</dt><dd>Belum ditugaskan</dd></dl>
+              </div>
+              <div class="note">
+                <b>Evidence.</b> seq 3810–3812 · <span class="mono">motor_current_a</span> 2,84 / 2,79 / 2,81 ·
+                <span class="mono">limit_closed=false</span> · <span class="mono">estop=false</span> ·
+                encoder 0 step. Rujukan pembacaan: <span class="mono">rd_7f21…</span>
+              </div>
+              <div>
+                <span class="kpi__label">Tindakan disarankan</span>
+                <p class="small">Periksa hambatan mekanis pada pintu dan sisa material. Jangan
+                  mengirim perintah buka/tutup sebelum arus kembali normal dan mode dilaporkan
+                  AUTO/IDLE oleh perangkat.</p>
+              </div>
+              <div class="row" data-roles="OPERATOR PEKASEH ADMIN">
+                <button class="btn btn--sm btn--primary">Akui peringatan</button>
+                <button class="btn btn--sm">Tugaskan ke saya</button>
+                <button class="btn btn--sm" disabled title="Perlu ACK dari pengguna lain">Selesaikan</button>
+              </div>
+              <div class="banner banner--offline" data-roles="VIEWER">
+                <span>ℹ️</span><div class="small">Anda dapat memantau peringatan ini. Acknowledgement
+                  dan penyelesaian dilakukan operator atau Pekaseh.</div>
+              </div>
+              <div class="banner banner--critical" role="note">
+                <span>⚠️</span>
+                <div class="small"><strong>Indikasi anomali (advisory).</strong> Pola arus naik
+                  sebelum mode FAULT, confidence 0,82. Ini bukan perintah — sistem tidak dan tidak
+                  akan menggerakkan pintu berdasarkan rekomendasi ini.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card__head"><h2>Peringatan lain</h2></div>
+            <div class="card__body card__body--flush">
+              <div class="list">
+                <div class="list__item">
+                  <span class="sev-bar sev-bar--high"></span>
+                  <div style="flex:1">
+                    <div class="between"><strong>Baterai rendah — SIM-NODE-07</strong><span class="small muted">13:48</span></div>
+                    <div class="small muted">42% (ambang 45%) · diakui Operator Sari · menunggu penggantian</div>
+                  </div>
+                  <span class="badge badge--warning">DIAKUI</span>
+                </div>
+                <div class="list__item">
+                  <span class="sev-bar sev-bar--medium"></span>
+                  <div style="flex:1">
+                    <div class="between"><strong>Data tidak segar — SIM-NODE-11</strong><span class="small muted">13:40</span></div>
+                    <div class="small muted">Tidak ada uplink 6 menit · RSSI terakhir −103 dBm</div>
+                  </div>
+                  <span class="badge badge--critical">TERBUKA</span>
+                </div>
+                <div class="list__item">
+                  <span class="sev-bar sev-bar--medium"></span>
+                  <div style="flex:1">
+                    <div class="between"><strong>Penyimpangan debit — GATE-02</strong><span class="small muted">12:40</span></div>
+                    <div class="small muted">Aktual 32,0 vs target 34,1 L/d (−6,2%, toleransi ±10%)</div>
+                  </div>
+                  <span class="badge badge--ok">SELESAI</span>
+                </div>
+                <div class="list__item">
+                  <span class="sev-bar sev-bar--info"></span>
+                  <div style="flex:1">
+                    <div class="between"><strong>Encoder mismatch — GATE-01</strong><span class="small muted">11:20</span></div>
+                    <div class="small muted">Target 40% · posisi 34% selama 2 siklus · ditutup setelah kalibrasi</div>
+                  </div>
+                  <span class="badge badge--ok">SELESAI</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <section class="card">
+            <div class="card__head"><h3>Riwayat penanganan</h3></div>
+            <div class="card__body">
+              <div class="timeline">
+                <div class="timeline__item"><span class="timeline__dot timeline__dot--critical"></span>
+                  <div><div class="between"><strong>Alert dibuat</strong><span class="small muted">14:12</span></div>
+                    <div class="small muted">Sistem · arus 2,84 A &gt; 2,50 A</div></div></div>
+                <div class="timeline__item"><span class="timeline__dot"></span>
+                  <div><div class="between"><strong>Notifikasi terkirim</strong><span class="small muted">14:12</span></div>
+                    <div class="small muted">2 penerima · Operator, Pekaseh</div></div></div>
+                <div class="timeline__item"><span class="timeline__dot timeline__dot--muted"></span>
+                  <div><div class="between"><strong>Menunggu acknowledgement</strong><span class="small muted">—</span></div>
+                    <div class="small muted">Belum ada pemilik</div></div></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card__head"><h3>Aturan pembuatan</h3></div>
+            <div class="card__body stack--sm">
+              <p class="small"><strong>Device offline:</strong> tidak ada uplink &gt; 5× interval.</p>
+              <p class="small"><strong>Low battery:</strong> &lt; 45%, dicek per 10 menit.</p>
+              <p class="small"><strong>Overcurrent:</strong> arus &gt; batas selama ≥ 2 pembacaan.</p>
+              <p class="small"><strong>Encoder mismatch:</strong> target vs posisi &gt; 3% selama 2 siklus.</p>
+              <p class="small muted">Setiap alert menyimpan <span class="mono">dedup_key</span> agar tidak
+                membuat baris ganda untuk gangguan yang sama.</p>
+            </div>
+          </section>
+
+          <section class="card card--soft">
+            <div class="card__head"><h3>Preferensi notifikasi</h3></div>
+            <div class="card__body">
+              <label class="check"><input type="checkbox" checked> Web Push untuk CRITICAL</label>
+              <label class="check mt-4"><input type="checkbox" checked> Email untuk HIGH &amp; CRITICAL</label>
+              <label class="check mt-4"><input type="checkbox"> Ringkasan harian 06:00 WITA</label>
+              <p class="hint mt-4">Izin notifikasi diminta hanya setelah pengguna menekan tombol
+                aktifkan di halaman Pengaturan.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

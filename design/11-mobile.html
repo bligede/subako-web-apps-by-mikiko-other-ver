@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="id" data-role="PEKASEH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUBAKO — Tampilan Mobile</title>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .m-card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
+  .m-kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .m-kpi > div { border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; }
+  .m-kpi b { display: block; font-size: 20px; line-height: 26px; font-variant-numeric: tabular-nums; }
+  .m-kpi span { font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: var(--slate); font-weight: 600; }
+  .m-title { font-size: 16px; font-weight: 700; margin: 4px 0 10px; }
+  .m-sticky { position: absolute; left: 10px; right: 10px; bottom: 66px; background: rgba(255,255,255,.97); border: 1px solid var(--line); border-radius: 12px; padding: 10px; box-shadow: 0 6px 18px rgba(16,68,59,.12); }
+</style>
+</head>
+<body data-page="mobile">
+<div class="proto-bar">
+  <b>PROTOTIPE DESAIN</b>
+  <span>Tampilan mobile · 360 px · bottom navigation 5 item</span>
+  <span class="spacer"></span>
+  <label>Role:
+    <select data-role-select aria-label="Simulasikan role">
+      <option value="VIEWER">Petani / Viewer</option>
+      <option value="OPERATOR">Operator</option>
+      <option value="PEKASEH" selected>Pekaseh</option>
+      <option value="ADMIN">Administrator</option>
+    </select>
+  </label>
+  <a href="index.html">Indeks</a>
+  <a href="styleguide.html">Styleguide</a>
+</div>
+
+<main style="max-width:1280px;margin:0 auto;padding:24px">
+  <div class="page-head">
+    <div>
+      <h1>Tampilan Mobile</h1>
+      <p class="lede">Layout 360 px dengan bottom navigation, kartu sensor, dan panel aksi yang
+        menempel di bawah. Tabel berubah menjadi kartu; grafik ringkas menjadi sparkline.</p>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+
+    <!-- Dashboard mobile -->
+    <div>
+      <div class="phone">
+        <div class="phone__notch"></div>
+        <div class="phone__scroll">
+          <div class="between mb-2">
+            <div>
+              <div class="micro muted">SUBAK SARI</div>
+              <div style="font-size:16px;font-weight:700">Selamat pagi, Wayan</div>
+            </div>
+            <div class="avatar" style="width:30px;height:30px">PK</div>
+          </div>
+
+          <div class="banner banner--demo" style="padding:7px 10px;font-size:11px">
+            <span>⚠️</span><div><strong>DATA SIMULASI</strong></div>
+          </div>
+
+          <div class="m-kpi mt-4">
+            <div><span>Debit</span><b>37,6</b><span style="text-transform:none">L/detik · LIVE</span></div>
+            <div><span>Ketinggian</span><b>0,82</b><span style="text-transform:none">m · STALE 4 mnt</span></div>
+          </div>
+
+          <div class="m-card" style="border-left:3px solid var(--critical-ink)">
+            <div class="between"><strong style="font-size:13px">Motor overcurrent</strong><span class="badge badge--critical">KRITIS</span></div>
+            <div class="small muted">GATE-02 · 14:12 WITA · belum diakui</div>
+          </div>
+
+          <div class="m-card">
+            <div class="between"><strong style="font-size:13px">Giliran Anda</strong><span class="badge badge--ok">HARI INI</span></div>
+            <div class="small muted">Tempek Kedua · 10:00–14:00 WITA · 35%</div>
+            <div class="progress mt-4"><span style="width:62%"></span></div>
+            <div class="small muted mt-4">Realisasi 62% dari jatah waktu</div>
+          </div>
+
+          <div class="m-card">
+            <div class="between"><strong style="font-size:13px">Pintu</strong><a class="small" href="04-gates.html">semua</a></div>
+            <div class="between small mt-4"><span>GATE-01 · AUTO</span><b class="num">34,0%</b></div>
+            <div class="between small mt-4"><span>GATE-02 · FAULT</span><b class="num">0,0%</b></div>
+            <div class="between small mt-4"><span>GATE-03 · HOLD</span><b class="num">22,5%</b></div>
+          </div>
+
+          <div class="m-card">
+            <div class="kpi__label mb-2">Debit 24 jam</div>
+            <div data-spark="30,31,33,32,34,35,34,36,35,37,36,37.6" data-color="#159d8a"></div>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <a href="#" class="is-active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Beranda</span></a>
+          <a href="06-rules.html#jadwal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            <span>Jadwal</span></a>
+          <a href="04-gates.html">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9l6-4 6 4v11"/><path d="M9 20v-5h3v5"/></svg>
+            <span>Pintu</span></a>
+          <a href="08-alerts.html">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+            <span>Peringatan</span></a>
+          <a href="index.html">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9.5" cy="15" r="1.2"/></svg>
+            <span>Lainnya</span></a>
+        </nav>
+      </div>
+      <p class="phone__label">Dashboard · role Pekaseh</p>
+    </div>
+
+    <!-- Gate detail mobile -->
+    <div>
+      <div class="phone">
+        <div class="phone__notch"></div>
+        <div class="phone__scroll">
+          <div class="row small muted mb-2"><a href="04-gates.html">Pintu</a><span>/</span><span>GATE-01</span></div>
+          <div class="m-title">GATE-01</div>
+          <div class="row row--wrap" style="gap:6px">
+            <span class="badge badge--ok">AUTO</span>
+            <span class="badge badge--live">LIVE · 44 s</span>
+            <span class="badge badge--demo">DEMO</span>
+          </div>
+
+          <div class="m-card mt-4">
+            <div class="kpi__label">Bukaan pintu</div>
+            <div class="sensor-value">34,0<small>%</small></div>
+            <div class="progress mt-4"><span style="width:34%"></span></div>
+            <div class="small muted mt-4">target rule 40,0% · selisih −6,0%</div>
+          </div>
+
+          <div class="m-kpi">
+            <div><span>Hulu</span><b>0,82</b><span style="text-transform:none">m · OK</span></div>
+            <div><span>Debit</span><b>37,6</b><span style="text-transform:none">L/d · OK</span></div>
+            <div><span>Baterai</span><b>87</b><span style="text-transform:none">% · 3,98 V</span></div>
+            <div><span>Arus motor</span><b>1,24</b><span style="text-transform:none">A · normal</span></div>
+          </div>
+
+          <div class="m-card">
+            <div class="between"><strong style="font-size:13px">Telemetri 24 jam</strong><span class="small muted">grafik</span></div>
+            <div class="mt-4" data-spark="0.71,0.68,0.66,0.7,0.78,0.82,0.79,0.74" data-color="#0f7a6b"></div>
+          </div>
+
+          <div class="m-card">
+            <div class="between"><strong style="font-size:13px">Command terakhir</strong><span class="badge badge--ok">EXECUTED</span></div>
+            <div class="small muted">12:00:48 · target 40% → posisi 34%</div>
+            <div class="small muted">ACK diterima 12:00:41</div>
+          </div>
+        </div>
+
+        <div class="m-sticky" data-roles="OPERATOR PEKASEH">
+          <div class="row" style="gap:8px">
+            <button class="btn btn--sm" style="flex:1;height:36px">Tutup</button>
+            <button class="btn btn--sm" style="flex:1;height:36px">Tahan</button>
+            <button class="btn btn--sm btn--primary" style="flex:1.4;height:36px">Atur target</button>
+          </div>
+          <div class="hint" style="text-align:center;margin-top:4px">Perintah tercatat di ledger · kedaluwarsa 90 s</div>
+        </div>
+        <div class="m-sticky" data-roles="VIEWER ADMIN">
+          <div class="hint" style="text-align:center">Mode pantau — aktuasi memerlukan operator atau Pekaseh.</div>
+        </div>
+
+        <nav class="bottom-nav">
+          <a href="02-dashboard.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Beranda</span></a>
+          <a href="06-rules.html#jadwal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Jadwal</span></a>
+          <a href="#" class="is-active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9l6-4 6 4v11"/><path d="M9 20v-5h3v5"/></svg><span>Pintu</span></a>
+          <a href="08-alerts.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span>Peringatan</span></a>
+          <a href="index.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9.5" cy="15" r="1.2"/></svg><span>Lainnya</span></a>
+        </nav>
+      </div>
+      <p class="phone__label">Detail pintu · panel aksi sticky</p>
+    </div>
+
+    <!-- Alerts mobile -->
+    <div>
+      <div class="phone">
+        <div class="phone__notch"></div>
+        <div class="phone__scroll">
+          <div class="between mb-2">
+            <div class="m-title" style="margin:0">Peringatan</div>
+            <span class="badge badge--critical">1 kritis</span>
+          </div>
+          <div class="segmented mb-2" style="width:100%">
+            <button class="is-active" style="flex:1">Terbuka</button>
+            <button style="flex:1">Diakui</button>
+            <button style="flex:1">Selesai</button>
+          </div>
+
+          <div class="m-card" style="border-left:3px solid var(--critical-ink)">
+            <div class="between"><strong style="font-size:13px">Motor overcurrent</strong><span class="small muted">14:12</span></div>
+            <div class="small muted">GATE-02 · 2,84 A &gt; 2,50 A</div>
+            <div class="note mt-4" style="padding:8px 10px;font-size:11px">
+              Periksa hambatan mekanis. Jangan kirim perintah sebelum arus normal.
+            </div>
+            <div class="row mt-4" style="gap:6px">
+              <button class="btn btn--sm btn--primary" style="flex:1;height:34px">Akui</button>
+              <button class="btn btn--sm" style="flex:1;height:34px">Detail</button>
+            </div>
+          </div>
+
+          <div class="m-card" style="border-left:3px solid var(--warning)">
+            <div class="between"><strong style="font-size:13px">Baterai rendah</strong><span class="badge badge--warning">DIAKUI</span></div>
+            <div class="small muted">SIM-NODE-07 · 42% · operator Sari</div>
+          </div>
+
+          <div class="m-card" style="border-left:3px solid var(--info)">
+            <div class="between"><strong style="font-size:13px">Data tidak segar</strong><span class="badge badge--critical">TERBUKA</span></div>
+            <div class="small muted">SIM-NODE-11 · 6 menit tanpa uplink</div>
+          </div>
+
+          <div class="m-card" style="border-left:3px solid var(--teal-600)">
+            <div class="between"><strong style="font-size:13px">Penyimpangan debit</strong><span class="badge badge--ok">SELESAI</span></div>
+            <div class="small muted">GATE-02 · −6,2% (dalam toleransi)</div>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <a href="02-dashboard.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Beranda</span></a>
+          <a href="06-rules.html#jadwal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Jadwal</span></a>
+          <a href="04-gates.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9l6-4 6 4v11"/><path d="M9 20v-5h3v5"/></svg><span>Pintu</span></a>
+          <a href="#" class="is-active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span>Peringatan</span></a>
+          <a href="index.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9.5" cy="15" r="1.2"/></svg><span>Lainnya</span></a>
+        </nav>
+      </div>
+      <p class="phone__label">Peringatan · aksi cepat</p>
+    </div>
+  </div>
+
+  <div class="grid g-3 mt-4">
+    <section class="card"><div class="card__head"><h3>Aturan responsif</h3></div>
+      <div class="card__body stack--sm">
+        <p class="small">&lt; 640 px: satu kolom, bottom nav, panel aksi sticky.</p>
+        <p class="small">640–1023 px: sidebar menjadi rail ikon 72 px.</p>
+        <p class="small">≥ 1024 px: sidebar 248 px, KPI 4 kolom.</p>
+      </div></section>
+    <section class="card"><div class="card__head"><h3>Perubahan komponen</h3></div>
+      <div class="card__body stack--sm">
+        <p class="small">Tabel → kartu dengan label kolom.</p>
+        <p class="small">Grafik penuh → sparkline + tombol buka grafik.</p>
+        <p class="small">Filter → drawer, chip tetap terlihat.</p>
+      </div></section>
+    <section class="card"><div class="card__head"><h3>Keselamatan di lapangan</h3></div>
+      <div class="card__body stack--sm">
+        <p class="small">Target sentuh ≥ 44 px, jarak antar tombol ≥ 8 px.</p>
+        <p class="small">Tidak ada aksi destruktif tanpa konfirmasi ketik.</p>
+        <p class="small">Data basi selalu berlabel; tidak ada antrean command offline.</p>
+      </div></section>
+  </div>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

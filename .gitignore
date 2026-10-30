@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+backend/.venv/
+
+# build output
+frontend/dist/
+frontend/dev-dist/
+*.tsbuildinfo
+
+# runtime data
+*.db
+*.sqlite3
+backend/subako.db
+backend/test_subako.db
+
+# env & secrets
+.env
+backend/.env
+!.env.example
+!backend/.env.example
+
+# tooling
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
